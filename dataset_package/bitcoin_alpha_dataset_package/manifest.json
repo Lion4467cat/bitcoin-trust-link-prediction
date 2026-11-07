@@ -1,0 +1,30 @@
+{
+  "source": "https://snap.stanford.edu/data/soc-sign-bitcoinalpha.html",
+  "files": {
+    "raw/soc-sign-bitcoinalpha.csv.gz": {
+      "sha256": "3a178611b9c2f39c9a0dc75936f28557317f1733319b49da4838232b3757cd76",
+      "bytes": 149480
+    },
+    "processed/signed_edge_list.csv": {
+      "sha256": "e8fad6863d74ad2faea8ac94ac4148b6d50fdd00f271ff50c3c5f8580efb49db",
+      "bytes": 534547
+    },
+    "processed/undirected_pair_aggregation.csv": {
+      "sha256": "0fb9a313ffe41547484be70d137358d6283898b8433d7e410a8953d47012732f",
+      "bytes": 536162
+    },
+    "processed/bitcoin_alpha_signed.graphml": {
+      "sha256": "ac9e1756ac1600221db6ddeca50726ff88c8bb5d7e7aac880576b9ae60c88488",
+      "bytes": 1770710
+    }
+  },
+  "statistics": {
+    "raw_ratings": 24186,
+    "users_in_projection": 3783,
+    "signed_ties": 14081,
+    "positive_ties": 12769,
+    "negative_ties": 1312,
+    "neutral_pairs_removed": 43,
+    "triangles": 21677
+  }
+}

@@ -1,0 +1,22 @@
+# Virtual Environment
+.venv/
+.python312/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Jupyter Checkpoints
+.ipynb_checkpoints/
+
+# Matplotlib / Temporary caches
+.matplotlib/
+/tmp/
+
+# Rendered Previews
+reports/preview/

@@ -1,0 +1,112 @@
+{
+  "source": "Stanford SNAP soc-sign-bitcoinalpha.csv.gz",
+  "raw_ratings": 24186,
+  "directed_users": 3783,
+  "directed_ratings": 24186,
+  "undirected_pairs_before_neutral_removal": 14124,
+  "neutral_pairs_removed": 43,
+  "users_in_projection": 3783,
+  "signed_ties": 14081,
+  "positive_ties": 12769,
+  "negative_ties": 1312,
+  "positive_tie_fraction": 0.9068247993750443,
+  "negative_tie_fraction": 0.09317520062495561,
+  "density": 0.0019683649738112823,
+  "connected_components": 8,
+  "largest_component_nodes": 3772,
+  "largest_component_fraction": 0.9970922548242136,
+  "isolates": 3,
+  "mean_degree": 7.444356330954269,
+  "median_degree": 2.0,
+  "mean_local_clustering": 0.17473970611659725,
+  "triangles": 21677,
+  "balanced_triangles": 18565,
+  "unbalanced_triangles": 3112,
+  "balanced_triangle_fraction": 0.8564376989435808,
+  "null_model": "1000 permutations of signs across fixed undirected edges; sign counts preserved",
+  "permutations": 1000,
+  "random_seed": 2026,
+  "null_mean": 0.7694238132582922,
+  "null_sd": 0.007855215397705442,
+  "null_ci_low": 0.753561378419523,
+  "null_ci_high": 0.7852112838492411,
+  "z_score_vs_null": 11.07721192606709,
+  "permutation_p_upper": 0.000999000999000999,
+  "timestamp_min": 1289192400,
+  "timestamp_max": 1453438800,
+  "top_degree_users": [
+    {
+      "user_id": 1,
+      "degree": 511,
+      "degree_centrality": 0.1351136964569011,
+      "local_clustering": 0.005794098461302329
+    },
+    {
+      "user_id": 8,
+      "degree": 274,
+      "degree_centrality": 0.07244843997884717,
+      "local_clustering": 0.02914360578594155
+    },
+    {
+      "user_id": 3,
+      "degree": 263,
+      "degree_centrality": 0.06953992596509784,
+      "local_clustering": 0.038545264563318145
+    },
+    {
+      "user_id": 2,
+      "degree": 239,
+      "degree_centrality": 0.06319407720782655,
+      "local_clustering": 0.05681938047185402
+    },
+    {
+      "user_id": 11,
+      "degree": 235,
+      "degree_centrality": 0.06213643574828133,
+      "local_clustering": 0.06255682851427533
+    },
+    {
+      "user_id": 7,
+      "degree": 233,
+      "degree_centrality": 0.06160761501850873,
+      "local_clustering": 0.042696462927334616
+    },
+    {
+      "user_id": 177,
+      "degree": 226,
+      "degree_centrality": 0.0597567424643046,
+      "local_clustering": 0.05160275319567355
+    },
+    {
+      "user_id": 4,
+      "degree": 220,
+      "degree_centrality": 0.05817028027498678,
+      "local_clustering": 0.030427563304275634
+    },
+    {
+      "user_id": 15,
+      "degree": 209,
+      "degree_centrality": 0.05526176626123744,
+      "local_clustering": 0.049687154950312847
+    },
+    {
+      "user_id": 5,
+      "degree": 189,
+      "degree_centrality": 0.04997355896351137,
+      "local_clustering": 0.0482382078126759
+    }
+  ],
+  "ego_center_user_id": 759,
+  "ego_nodes": 21,
+  "ego_edges": 55,
+  "balanced_example_nodes": [
+    1,
+    2,
+    4
+  ],
+  "unbalanced_example_nodes": [
+    1,
+    2,
+    11
+  ]
+}

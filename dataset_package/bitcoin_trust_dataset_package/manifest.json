@@ -8,6 +8,7 @@
     "processed/bitcoin_link_prediction.graphml": "2ca32390ea17944c0fe9be939eddd98bafd510a7250bddd1148a66b0741c807c",
     "processed/link_prediction_metrics.json": "d225df39f940cad0c3b198a951b638a064a3dab158709d206ca218049aa76cdc",
     "processed/temporal_link_prediction_metrics.json": "fbb40d9bfc90e61c8298a1bffd0b20a255717d8a4e01116310676e02ec0a7f16",
+    "processed/trader_centrality_rankings.csv": "42b51d1c07d8eeb53ab31a9056116265fa9766525a99522dec463692ae2eac75",
     "README.md": "3f63de56d9be7b01db267b7ed602f4475f4f775edd9e4a46ded63f7c8d5b2213"
   },
   "statistics": {

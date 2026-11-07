@@ -73,6 +73,15 @@ We compute the degree assortativity coefficient $r = -0.1409$. Unlike social net
 
     nbformat.v4.new_code_cell("""display(Image(filename=str(ROOT / "visualizations" / "degree_assortativity_mixing.png")))"""),
 
+    nbformat.v4.new_markdown_cell(r"""### 2.3 K-Core Shell Decomposition & Centrality Nucleus
+K-core decomposition systematically peels away peripheral layers to reveal the dense trading nucleus.
+* **Maximum Core Number ($k_{max} = 19$):** Identifies an elite core of 108 market-making brokers who maintain at least 19 verified connections strictly within their peer group.
+* **PageRank & Betweenness:** Top brokers (e.g. Trader #100035, Trader #1, Trader #102642) exhibit PageRank up to 0.014 and Betweenness up to 0.079, serving as the network's liquidity bridges."""),
+
+    nbformat.v4.new_code_cell("""cent_df = pd.read_csv(ROOT / "outputs" / "trader_centrality_rankings.csv")
+display(cent_df.head(8))
+display(Image(filename=str(ROOT / "visualizations" / "k_core_and_centrality_distribution.png")))"""),
+
     nbformat.v4.new_markdown_cell("""## 3. Enterprise-Scale Synthetic Benchmark Generation
 
 To satisfy enterprise-scale network requirements, we generate a synthetic trust network of **25,000 nodes and ~150,000 edges** using the Holme-Kim power-law clustering model, preserving Bitcoin's empirical scale-free degree distribution and high triadic clustering ($C \\approx 0.18$)."""),
@@ -171,6 +180,38 @@ recs_df = pd.read_csv(ROOT / "outputs" / "top20_recommendations.csv")
 display(recs_df[["rank", "target_user", "common_neighbors", "adamic_adar", "ensemble_score", "feature_attribution", "community_role", "structural_balance_status"]])"""),
 
     nbformat.v4.new_code_cell("""display(Image(filename=str(ROOT / "visualizations" / "recommended_ego_network.png")))"""),
+
+    nbformat.v4.new_markdown_cell(r"""### 7.1 Cross-Algorithmic Consensus Matrix
+To deliver maximum confidence to traders, we evaluate candidate consensus across all 6 heuristics. Candidates recommended by 4 or more models represent high-conviction trading opportunities."""),
+
+    nbformat.v4.new_code_cell("""models = [
+    ("ensemble_score", "Ensemble"),
+    ("adamic_adar", "Adamic-Adar"),
+    ("common_neighbors", "Common Neighbors"),
+    ("jaccard", "Jaccard"),
+    ("preferential_attachment", "Preferential Attachment"),
+    ("resource_allocation", "Resource Allocation")
+]
+candidate_votes = {}
+for col, m_name in models:
+    top5 = recs_df.sort_values(col, ascending=False).head(5)
+    for rank, cand in enumerate(top5["target_user"], 1):
+        if cand not in candidate_votes:
+            row_c = recs_df[recs_df["target_user"] == cand].iloc[0]
+            candidate_votes[cand] = {
+                "Candidate": f"Trader #{cand}",
+                "Votes": 0,
+                "Mutual Peers": int(row_c["common_neighbors"]),
+                "Community Role": row_c["community_role"],
+                "Balance": row_c["structural_balance_status"]
+            }
+        candidate_votes[cand]["Votes"] += 1
+        candidate_votes[cand][m_name] = f"#{rank}"
+
+consensus_df = pd.DataFrame(list(candidate_votes.values())).fillna("—")
+consensus_df = consensus_df.sort_values(by="Votes", ascending=False).reset_index(drop=True)
+consensus_df["Consensus"] = consensus_df["Votes"].apply(lambda v: f"★ {v}/6 Models Agreed" if v >= 4 else f"{v}/6 Models")
+display(consensus_df[["Consensus", "Candidate", "Mutual Peers", "Ensemble", "Adamic-Adar", "Common Neighbors", "Jaccard", "Preferential Attachment", "Resource Allocation", "Community Role", "Balance"]])"""),
 
     nbformat.v4.new_markdown_cell("""## 8. Summary of Findings & Viva Defense
 

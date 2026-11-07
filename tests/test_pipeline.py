@@ -166,5 +166,45 @@ class TestRecommendationEngine(unittest.TestCase):
             self.assertAlmostEqual(total_pct, 100.0, places=0)
 
 
+class TestKCoreAndConsensus(unittest.TestCase):
+    """Verify K-Core shell decomposition and multi-algorithm consensus ranking."""
+
+    def setUp(self):
+        self.G = nx.barabasi_albert_graph(n=120, m=4, seed=42)
+
+    def test_k_core_shell_decomposition(self):
+        core_numbers = nx.core_number(self.G)
+        self.assertEqual(len(core_numbers), self.G.number_of_nodes())
+        max_core = max(core_numbers.values())
+        self.assertGreaterEqual(max_core, 4)
+        for node, k in core_numbers.items():
+            self.assertGreaterEqual(self.G.degree(node), k, f"Node {node} has degree less than its core number {k}!")
+
+    def test_consensus_ranking_structure(self):
+        user_id = 0
+        df = recommend_links_for_user(self.G, user_id=user_id, top_k=50, model="Ensemble")
+        models = [
+            ("ensemble_score", "Ensemble"),
+            ("adamic_adar", "Adamic-Adar"),
+            ("common_neighbors", "Common Neighbors"),
+            ("jaccard", "Jaccard"),
+            ("preferential_attachment", "Preferential Attachment"),
+            ("resource_allocation", "Resource Allocation")
+        ]
+        candidate_votes = {}
+        for col, m_name in models:
+            top5 = df.sort_values(col, ascending=False).head(5)
+            for rank, cand in enumerate(top5["target_user"], 1):
+                if cand not in candidate_votes:
+                    candidate_votes[cand] = {"votes": 0, "ranks": {}}
+                candidate_votes[cand]["votes"] += 1
+                candidate_votes[cand]["ranks"][m_name] = rank
+
+        self.assertGreater(len(candidate_votes), 0)
+        for cand, info in candidate_votes.items():
+            self.assertGreaterEqual(info["votes"], 1)
+            self.assertLessEqual(info["votes"], 6)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -246,20 +246,22 @@ slide3.notes_slide.notes_text_frame.text = (
 # SLIDE 4: Speaker 1 - Scale-Free Invariants & Degree Distribution
 # =============================================================
 slide4 = prs.slides.add_slide(blank_layout)
-add_header(slide4, "Exploratory Topology: Scale-Free Degree Distribution (γ ≈ 2.1)", "SPEAKER 1: Problem & Data")
+add_header(slide4, "Exploratory Topology: Scale-Free Dynamics (γ ≈ 2.1) & Disassortativity (r = -0.14)", "SPEAKER 1: Problem & Data")
 
 add_card(slide4, Inches(0.8), Inches(1.5), Inches(5.8), Inches(5.1))
 tx = slide4.shapes.add_textbox(Inches(1.0), Inches(1.7), Inches(5.4), Inches(4.7))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "Heavy-Tailed Scale-Free Dynamics"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_NAVY
+p = tf.paragraphs[0]; p.text = "Heavy-Tailed Scale-Free Dynamics & Core Stratification"; p.font.size = Pt(14); p.font.bold = True; p.font.color.rgb = C_NAVY
 p = tf.add_paragraph()
 p.text = "• Power-Law Degree Verification:\n" \
          "  The log-log degree plot exhibits a clear power-law distribution P(k) ~ k^(-γ) with exponent γ ≈ 2.1 across three orders of magnitude.\n\n" \
-         "• The OTC Broker Phenomenon:\n" \
-         "  In peer-to-peer cryptocurrency finance, transaction volume is not uniformly distributed. A small set of reputable market-maker hubs hold massive degrees.\n\n" \
+         "• Negative Degree Assortativity (r = -0.1409):\n" \
+         "  Unlike social networks (r > 0), Bitcoin OTC is disassortative. Retail peripheral traders connect directly to central broker hubs.\n\n" \
+         "• K-Core Nucleus (k_max = 19):\n" \
+         "  Identifies a dense core backbone of 108 market-maker hubs with PageRank up to 0.014 and Betweenness up to 0.079.\n\n" \
          "• Algorithmic Consequence:\n" \
          "  Because hubs naturally attract new transaction volume, Preferential Attachment (degree product) acts as an extraordinary global link predictor (ROC-AUC = 0.9505)."
-p.font.size = Pt(12.5); p.font.color.rgb = C_TEXT
+p.font.size = Pt(11); p.font.color.rgb = C_TEXT
 
 power_img = ROOT / "visualizations" / "degree_distribution_powerlaw.png"
 if power_img.exists():
@@ -269,8 +271,9 @@ slide4.notes_slide.notes_text_frame.text = (
     "SPEAKER 1 TALKING POINTS:\n"
     "Before running machine learning, we analyzed the fundamental topology of the network. "
     "As you can see in the log-log plot on the right, the Bitcoin Web-of-Trust follows a classic scale-free power law with gamma ≈ 2.1. "
-    "A small cadre of trusted brokers act as massive central hubs. "
-    "Understanding this scale-free property is the exact scientific key to understanding why Preferential Attachment scores so exceptionally well."
+    "Crucially, we also discovered negative degree assortativity (r = -0.1409), meaning peripheral retail traders connect directly to central broker hubs. "
+    "K-core decomposition reveals a 19-core nucleus of 108 elite brokers. "
+    "Understanding this hub-and-spoke scale-free property explains why Preferential Attachment achieves such dominant accuracy."
 )
 
 # =============================================================
@@ -542,22 +545,24 @@ slide11.notes_slide.notes_text_frame.text = (
 # SLIDE 12: Speaker 3 - Top-20 Recommendation & Structural Balance
 # =============================================================
 slide12 = prs.slides.add_slide(blank_layout)
-add_header(slide12, "Top-20 Recommendation Case Study & Structural Balance", "SPEAKER 3: Validation & Viva")
+add_header(slide12, "Top-20 Recommendation Engine, Consensus & Structural Balance", "SPEAKER 3: Validation & Viva")
 
 add_card(slide12, Inches(0.8), Inches(1.5), Inches(5.6), Inches(5.1))
 tx = slide12.shapes.add_textbox(Inches(1.0), Inches(1.7), Inches(5.2), Inches(4.7))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "Top-5 Recommended Partners for Trader #1"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_NAVY
+p = tf.paragraphs[0]; p.text = "Top-5 Recommended Partners for Trader #1"; p.font.size = Pt(14); p.font.bold = True; p.font.color.rgb = C_NAVY
 p = tf.add_paragraph()
-p.text = "• Rank 1: Trader #3 (57 Peers, AA: 26.94, Intra-Cluster #0)\n" \
-         "  XAI Attribution: 80% Community Trust | 20% Hub Liquidity\n" \
-         "• Rank 2: Trader #177 (37 Peers, AA: 14.45, Intra-Cluster #0)\n" \
-         "• Rank 3: Trader #14 (30 Peers, AA: 14.78, Intra-Cluster #0)\n" \
-         "• Rank 4: Trader #33 (35 Peers, AA: 13.88, Intra-Cluster #0)\n" \
-         "• Rank 5: Trader #7 (37 Peers, AA: 13.32, Intra-Cluster #0)\n\n" \
+p.text = "• Rank 1: Trader #3 (57 Peers, AA: 26.94, 6/6 Consensus, Intra-Cluster #0)\n" \
+         "  XAI: 80% Community Trust | 20% Hub Liquidity\n" \
+         "• Rank 2: Trader #177 (37 Peers, AA: 14.45, 6/6 Consensus, Intra-Cluster #0)\n" \
+         "• Rank 3: Trader #14 (30 Peers, AA: 14.78, 5/6 Consensus, Intra-Cluster #0)\n" \
+         "• Rank 4: Trader #33 (35 Peers, AA: 13.88, 5/6 Consensus, Intra-Cluster #0)\n" \
+         "• Rank 5: Trader #7 (37 Peers, AA: 13.32, 5/6 Consensus, Intra-Cluster #0)\n\n" \
+         "Cross-Algorithmic Consensus:\n" \
+         "Identifies high-conviction targets where local trust (AA/RA) and global liquidity (PA) converge.\n\n" \
          "Heider Structural Balance Grounding:\n" \
-         "In signed networks, tension occurs when ties create unbalanced triads like (+, +, -). Every single one of our top recommended ties forms a balanced (+, +, +) triad with mutual partners, actively minimizing trading disputes."
-p.font.size = Pt(12); p.font.color.rgb = C_TEXT
+         "100% of recommended ties close balanced (+, +, +) triads with mutual partners, actively minimizing trading disputes."
+p.font.size = Pt(11); p.font.color.rgb = C_TEXT
 
 ego_img = ROOT / "visualizations" / "recommended_ego_network.png"
 if ego_img.exists():
@@ -566,7 +571,8 @@ if ego_img.exists():
 slide12.notes_slide.notes_text_frame.text = (
     "SPEAKER 3 TALKING POINTS:\n"
     "Here you see our recommendation engine in action for Trader #1. "
-    "Trader #3 is ranked #1 because they share 57 mutual trusted peers, with an enormous Adamic-Adar score of 26.94. "
+    "Trader #3 is ranked #1 because they share 57 mutual trusted peers, with an enormous Adamic-Adar score of 26.94 and 100% agreement across all 6 models. "
+    "We provide explainable AI feature attribution, showing 80% trust vs 20% hub liquidity. "
     "Furthermore, we connected this directly to Heider's Structural Balance Theory: "
     "100% of our recommended links close balanced (+, +, +) triads, ensuring that newly introduced trading links reinforce community trust."
 )

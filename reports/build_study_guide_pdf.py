@@ -34,7 +34,7 @@ story += [
       "• <i>Slide 1:</i> Introduce the team, project title, and structure.<br/>"
       "• <i>Slide 2:</i> Explain OTC counterparty risk, anonymous trading, ratings from -10 to +10, and why link prediction is the ideal formulation.<br/>"
       "• <i>Slide 3:</i> Explain that we combined Stanford SNAP Bitcoin Alpha (3,783 users) and Bitcoin OTC (5,887 users) into 9,207 real traders and ~60k ratings.<br/>"
-      "• <i>Slide 4:</i> Present the log-log scale-free degree distribution fit (P(k) ~ k^(-2.1)) and explain why broker hubs drive Preferential Attachment accuracy.<br/>"
+      "• <i>Slide 4:</i> Present the log-log scale-free fit (P(k) ~ k^(-2.1)), negative degree assortativity (r = -0.1409; retail traders attach to broker hubs), and K-core decomposition (k_max = 19; 108 elite nucleus brokers).<br/>"
       "• <i>Slide 5:</i> Present the 25k-node enterprise synthetic scaling (Holme-Kim model), 80/20 train-test split, Minimum Spanning Tree protection, and balanced 50/50 negative sampling.", "GuideBody"),
     Spacer(1, 2*mm),
     p("<b>SPEAKER 2: Slides 6 – 9 (Link Prediction Algorithms & Mathematical Formulations)</b><br/>"
@@ -44,9 +44,9 @@ story += [
       "• <i>Slide 9:</i> Present the Normalized Rank Ensemble Model combining 30% AA + 25% RA + 25% Jaccard + 10% CN + 10% PA.", "GuideBody"),
     Spacer(1, 2*mm),
     p("<b>SPEAKER 3: Slides 10 – 14 (Benchmark Results, Top-20 Demo, Community Roles & Viva)</b><br/>"
-      "• <i>Slide 10:</i> Present the test scoreboard: Preferential Attachment (0.9505 AUC), Ensemble (0.9387 AUC), and 100% Precision@20 on local heuristics.<br/>"
+      "• <i>Slide 10:</i> Present the test scoreboard: Preferential Attachment (0.9505 AUC), Ensemble (0.9387 AUC), 100% Precision@20, and Chronological Temporal Backtesting (2010–2016; 100% P@20, zero lookahead bias).<br/>"
       "• <i>Slide 11:</i> Present the Enterprise Scaling chart: 0.7539 AUC and 100% Precision@10 and @20 on 25k nodes.<br/>"
-      "• <i>Slide 12:</i> Walk through the live Top-20 recommendations for Trader #1. Explain Community Roles (Intra-Cluster vs Inter-Cluster Bridge) and prove 100% (+, +, +) triad closure under Heider's Structural Balance Theory.<br/>"
+      "• <i>Slide 12:</i> Walk through the live Top-20 recommendations for Trader #1. Explain XAI feature attribution (80% Trust | 20% Liquidity), multi-model consensus, Community Roles, and prove 100% (+, +, +) triad closure under Heider's Structural Balance Theory.<br/>"
       "• <i>Slide 13:</i> Showcase the interactive web UI and complete checklist of the 5 official course deliverables.<br/>"
       "• <i>Slide 14:</i> Deliver the viva defense summary and conclude the presentation.", "GuideBody"),
     PageBreak(),

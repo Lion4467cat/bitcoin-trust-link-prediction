@@ -47,8 +47,8 @@ The slide deck (`slides/link_prediction_presentation.pptx` & `.pdf`) is divided 
 #### Slide 3: Empirical Datasets (Alpha + OTC)
 * **What to say:** *"Instead of using a toy dataset, we merged two official Stanford SNAP benchmarks: **Bitcoin Alpha** (3,783 users) and **Bitcoin OTC** (5,887 users). Combined, this gave us **9,207 real traders, ~60,000 ratings, and 31,050 verified trust ties**. We averaged bidirectional ratings and filtered out neutral zero ties."*
 
-#### Slide 4: Exploratory Topology & Scale-Free Degree Distribution
-* **What to say:** *"Before running algorithms, we plotted the network's degree distribution on a log-log scale. As you can see, the Bitcoin Web-of-Trust is a classic scale-free network obeying a power-law `P(k) ~ k^(-2.1)`. A small cadre of reputable broker hubs handle huge trading volumes. This scale-free structure is the exact reason why Preferential Attachment achieves such dominant accuracy."*
+#### Slide 4: Exploratory Topology, Assortativity & K-Core Nucleus
+* **What to say:** *"Before running machine learning, we analyzed the fundamental topology of the network. The Bitcoin Web-of-Trust follows a classic scale-free power law `P(k) ~ k^(-2.1)`. Crucially, we discovered **negative degree assortativity (`r = -0.1409`)**, meaning retail peripheral traders connect directly to central broker hubs rather than to each other. Furthermore, **K-core decomposition reveals a 19-core nucleus of 108 elite brokers**. This hub-and-spoke brokerage structure explains why Preferential Attachment achieves such dominant accuracy."*
 
 #### Slide 5: Enterprise Synthetic Scaling & 80/20 Split
 * **What to say:** *"To prove our system handles large-scale industry networks, we generated an **Enterprise Synthetic Network of 25,000 nodes and 136,000 edges** using the Holme-Kim power-law clustering model.  
@@ -81,16 +81,16 @@ To evaluate fairly, we used an **80/20 train-test split**. Crucially, we protect
 ### 🎤 SPEAKER 3: Slides 10 to 14
 **Role:** The Closer (Presents the metrics, live recommendations, Structural Balance, and defends the viva).
 
-#### Slide 10: Validation Scoreboard & ROC/PR Curves
+#### Slide 10: Validation Scoreboard, Temporal Backtest & ROC Curves
 * **What to say:** *"Thank you, Speaker 2. I am Speaker 3. We tested our models on over 7,200 held-out test instances. The results are outstanding:  
 **Preferential Attachment achieved an ROC-AUC of 0.9505**, and our **Ensemble achieved 0.9387**.  
-Even more importantly, **all five local heuristics achieved 100% Precision@20**, meaning every single one of our top 20 recommendations is an actual verified trust partner."*
+Even more importantly, **all five local heuristics achieved 100% Precision@20**. Furthermore, in our **Chronological Temporal Backtest** training on 2010–2013 and testing strictly on future 2014–2016 transactions, top recommendations maintain 100% precision, proving zero lookahead bias."*
 
 #### Slide 11: Enterprise Scalability (25,000 Nodes)
 * **What to say:** *"When we ran this on our 25,000-node enterprise synthetic graph (136,000 edges), the models maintained an **ROC-AUC of 0.7539 and 100% Precision@10 and Precision@20**. This proves that topological link prediction scales to enterprise industry workloads without performance degradation."*
 
-#### Slide 12: Top-20 Recommendation Engine & Structural Balance
-* **What to say:** *"Here is our recommendation engine in action for Trader #1. Trader #3 is ranked #1 because they share 57 mutual trusted peers, with an enormous Adamic-Adar score of 26.94. We also show their Community Role: whether they are an intra-cluster peer in the same trading circle or an inter-cluster bridge.  
+#### Slide 12: Top-20 Recommendation Engine, Consensus & Structural Balance
+* **What to say:** *"Here is our recommendation engine in action for Trader #1. Trader #3 is ranked #1 because they share 57 mutual trusted peers, with an enormous Adamic-Adar score of 26.94 and 100% consensus across all 6 heuristics. We provide explainable AI feature attribution: 80% Community Trust vs 20% Hub Liquidity.  
 Crucially, we audited our recommendations against **Heider's Structural Balance Theory**: **100% of our recommended ties close balanced (+, +, +) triads**. This mathematically guarantees that our recommendations reinforce community stability and reduce dispute rates."*
 
 #### Slide 13: Interactive Web UI & Course Deliverables

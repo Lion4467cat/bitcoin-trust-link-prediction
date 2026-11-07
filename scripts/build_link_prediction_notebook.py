@@ -15,14 +15,16 @@ cells = [
     nbformat.v4.new_markdown_cell("""# Enterprise Trust Recommendation & Link Prediction in the Bitcoin Web-of-Trust
 
 **Social Network Analysis (SNA) — Alternative Assessment Task (AAT)**  
+**Department:** Department of Machine Learning  
 **Topic:** Topological Link Prediction & Trust Partner Recommendation on Signed Cryptocurrency Networks  
 **Syllabus Alignment:**
 1. **Problem Definition & Network Modeling:** Formulating trust recommendation as binary edge classification on the Bitcoin Web-of-Trust.
 2. **Data Preparation & Construction:** Cleaning, NetworkX loading, **80/20 Train-Test split**, and **Negative Sampling** of unobserved non-edges.
-3. **SNA Link Prediction Algorithms:** Implementing **Common Neighbors (CN)**, **Jaccard Coefficient**, **Adamic-Adar (AA)**, and **Preferential Attachment (PA)**.
-4. **Algorithm Comparison & Validation:** Benchmarking with **ROC-AUC**, **Precision@K** ($K=10, 20, 50, 100$), **Recall**, and **F1-Score**.
-5. **Recommendation & Interpretation:** Filtering **Top-10 and Top-20 Predicted Links** with topological and Structural Balance justifications.
-6. **Enterprise Scaling:** Benchmarking across both empirical Bitcoin data and a **25,000-node Enterprise Synthetic Network**."""),
+3. **SNA Link Prediction Algorithms:** Implementing **Common Neighbors (CN)**, **Jaccard Coefficient**, **Adamic-Adar (AA)**, **Resource Allocation (RA)**, and **Preferential Attachment (PA)**.
+4. **Algorithm Comparison & Validation:** Benchmarking with **ROC-AUC**, **Precision@K** ($K=10, 20, 50, 100$), **Average Precision (AP)**, and **F1-Score**.
+5. **Dual Temporal Validation:** Performing strict **Chronological Temporal Backtesting (2010–2016)** to eliminate lookahead bias.
+6. **Recommendation & Interpretation:** Filtering **Top-10 and Top-20 Predicted Links** with **XAI Feature Attribution** and Structural Balance justifications.
+7. **Enterprise Scaling:** Benchmarking across both empirical Bitcoin data and a **25,000-node Enterprise Synthetic Network**."""),
 
     nbformat.v4.new_markdown_cell("""## 1. Problem Formulation & Network Modeling
 
@@ -65,6 +67,11 @@ display(pairs_df.head(6))"""),
 As shown in the log-log plot below, the degree distribution $P(k)$ follows a power law $P(k) \sim k^{-2.1}$, confirming that Bitcoin OTC is a scale-free network governed by prominent broker hubs."""),
 
     nbformat.v4.new_code_cell("""display(Image(filename=str(ROOT / "visualizations" / "degree_distribution_powerlaw.png")))"""),
+
+    nbformat.v4.new_markdown_cell(r"""### 2.2 Disassortative Mixing & Broker Hub Topology
+We compute the degree assortativity coefficient $r = -0.1409$. Unlike social networks where popular nodes connect to popular nodes ($r > 0$), financial OTC markets are strongly **disassortative** ($r < 0$): low-degree retail traders connect directly to high-degree market-maker broker hubs, creating a star-like liquidity topology."""),
+
+    nbformat.v4.new_code_cell("""display(Image(filename=str(ROOT / "visualizations" / "degree_assortativity_mixing.png")))"""),
 
     nbformat.v4.new_markdown_cell("""## 3. Enterprise-Scale Synthetic Benchmark Generation
 
@@ -139,6 +146,14 @@ display(scoreboard_df)"""),
 display(Image(filename=str(ROOT / "visualizations" / "link_prediction_pr_curves.png")))
 display(Image(filename=str(ROOT / "visualizations" / "link_prediction_precision_at_k.png")))"""),
 
+    nbformat.v4.new_markdown_cell("""### 6.1 Dual Validation: Chronological Temporal Backtesting (2010–2016)
+To eliminate any potential lookahead bias in random cross-validation, we conduct a forward-in-time chronological backtest:
+* **Training Window:** Historical transactions from 2010 to 2013 ($N = 24,692$ edges).
+* **Test Window:** Predicting genuine new trust ties that formed in 2014 to 2016 ($N = 3,746$ future edges vs. $3,746$ negative non-edges).
+* **Result:** Preferential Attachment achieves **0.8285 ROC-AUC**, Ensemble achieves **0.8150 ROC-AUC**, and all local heuristics maintain **100% Precision@20**, proving that the models genuinely predict future relationship formation."""),
+
+    nbformat.v4.new_code_cell("""display(Image(filename=str(ROOT / "visualizations" / "temporal_link_prediction_comparison.png")))"""),
+
     nbformat.v4.new_markdown_cell("""## 7. Recommendation & Interpretation: Top-20 Predicted Links
 
 Using the trained models, we generate and filter the **Top-20 Recommended Trust Links** for Target Trader #1 (one of the primary market participants). For each recommendation, we analyze:
@@ -153,7 +168,7 @@ print(f"Detected {len(comms)} modular trading clusters via Louvain algorithm.")
 print(f"Network Modularity Q: {modularity:.4f} (High community structure)")
 
 recs_df = pd.read_csv(ROOT / "outputs" / "top20_recommendations.csv")
-display(recs_df[["rank", "target_user", "common_neighbors", "adamic_adar", "preferential_attachment", "ensemble_score", "community_role", "structural_balance_status"]])"""),
+display(recs_df[["rank", "target_user", "common_neighbors", "adamic_adar", "ensemble_score", "feature_attribution", "community_role", "structural_balance_status"]])"""),
 
     nbformat.v4.new_code_cell("""display(Image(filename=str(ROOT / "visualizations" / "recommended_ego_network.png")))"""),
 

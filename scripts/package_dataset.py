@@ -21,6 +21,8 @@ shutil.copy2(ROOT / "outputs" / "bitcoin_synthetic_enterprise.csv", PACKAGE / "p
 shutil.copy2(ROOT / "outputs" / "top20_recommendations.csv", PACKAGE / "processed" / "top20_recommendations.csv")
 shutil.copy2(ROOT / "outputs" / "bitcoin_link_prediction.graphml", PACKAGE / "processed" / "bitcoin_link_prediction.graphml")
 shutil.copy2(ROOT / "outputs" / "link_prediction_metrics.json", PACKAGE / "processed" / "link_prediction_metrics.json")
+if (ROOT / "outputs" / "temporal_link_prediction_metrics.json").exists():
+    shutil.copy2(ROOT / "outputs" / "temporal_link_prediction_metrics.json", PACKAGE / "processed" / "temporal_link_prediction_metrics.json")
 
 readme = """# Bitcoin Web-of-Trust Dataset Package (Empirical & Enterprise Synthetic)
 
@@ -56,6 +58,7 @@ files = [
     PACKAGE / "processed" / "top20_recommendations.csv",
     PACKAGE / "processed" / "bitcoin_link_prediction.graphml",
     PACKAGE / "processed" / "link_prediction_metrics.json",
+    PACKAGE / "processed" / "temporal_link_prediction_metrics.json",
     PACKAGE / "README.md"
 ]
 

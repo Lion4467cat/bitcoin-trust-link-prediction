@@ -24,7 +24,7 @@ def p(text, style="GuideBody"):
     return Paragraph(text, styles[style])
 
 story += [
-    p("BITCOIN WEB-OF-TRUST: SNA APPLIED ASSESSMENT TASK", "DocSub"),
+    p("BITCOIN WEB-OF-TRUST: SNA APPLIED ASSESSMENT TASK  •  DEPARTMENT OF MACHINE LEARNING", "DocSub"),
     p("Team Presentation & Viva Study Guide (3-Speaker Plan)", "DocTitle"),
     HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0D9488"), spaceBefore=2, spaceAfter=6),
     p("<b>The 60-Second Elevator Pitch:</b> In OTC cryptocurrency markets, anonymous traders face extreme fraud risk because trades are irreversible and have no escrow. We formulate trust recommendation as a topological link prediction task on the Bitcoin Web-of-Trust. Using four fundamental heuristics (Common Neighbors, Jaccard, Adamic-Adar, Preferential Attachment) and a normalized rank ensemble, our models predict future trading partners with 0.9505 ROC-AUC and 100% Precision@20, evaluated across 9,207 real traders (~60k ratings) and a 25,000-node enterprise synthetic network. 100% of recommended ties satisfy Heider's Structural Balance by completing (+, +, +) triads.", "GuideCallout"),

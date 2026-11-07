@@ -79,13 +79,24 @@ def recommend_links_for_user(
         span = col.max() - col.min()
         return (col - col.min()) / span if span > 0 else np.zeros_like(col)
         
-    df["ensemble_score"] = (
-        0.30 * norm(df["adamic_adar"]) +
-        0.25 * norm(df["resource_allocation"]) +
-        0.25 * norm(df["jaccard"]) +
-        0.10 * norm(df["common_neighbors"]) +
-        0.10 * norm(df["preferential_attachment"])
-    ).round(4)
+    n_aa = 0.30 * norm(df["adamic_adar"])
+    n_ra = 0.25 * norm(df["resource_allocation"])
+    n_jac = 0.25 * norm(df["jaccard"])
+    n_cn = 0.10 * norm(df["common_neighbors"])
+    n_pa = 0.10 * norm(df["preferential_attachment"])
+
+    df["ensemble_score"] = (n_aa + n_ra + n_jac + n_cn + n_pa).round(4)
+    
+    local_signal = n_aa + n_ra + n_jac
+    global_signal = n_cn + n_pa
+    total_signal = local_signal + global_signal + 1e-9
+    
+    df["local_trust_pct"] = (100.0 * local_signal / total_signal).round(1)
+    df["hub_popularity_pct"] = (100.0 * global_signal / total_signal).round(1)
+    df["feature_attribution"] = df.apply(
+        lambda r: f"{r['local_trust_pct']}% Community Trust | {r['hub_popularity_pct']}% Hub Liquidity",
+        axis=1
+    )
     
     sort_col = {
         "Common Neighbors": "common_neighbors",
@@ -108,7 +119,7 @@ def recommend_links_for_user(
     )
     
     df["recommendation_rationale"] = df.apply(
-        lambda r: f"Shares {r['common_neighbors']} mutual trusted traders; high Adamic-Adar ({r['adamic_adar']}) & Resource Allocation ({r['resource_allocation']}) confirm tight community trust ({r['community_role']}).",
+        lambda r: f"Shares {r['common_neighbors']} mutual trusted traders; Attribution: {r['feature_attribution']} ({r['community_role']}).",
         axis=1
     )
     

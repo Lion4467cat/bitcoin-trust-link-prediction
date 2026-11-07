@@ -146,7 +146,8 @@ class TestRecommendationEngine(unittest.TestCase):
         required_cols = [
             "rank", "target_user", "common_neighbors", "jaccard",
             "adamic_adar", "resource_allocation", "preferential_attachment",
-            "ensemble_score", "structural_balance_status", "community_role"
+            "ensemble_score", "structural_balance_status", "community_role",
+            "feature_attribution", "local_trust_pct", "hub_popularity_pct"
         ]
         for col in required_cols:
             self.assertIn(col, recs.columns, f"Missing required column {col}")
@@ -158,6 +159,11 @@ class TestRecommendationEngine(unittest.TestCase):
         # Check balance status
         for status in recs["structural_balance_status"]:
             self.assertEqual(status, "Balanced (+, +, +)")
+
+        # Check percentage attribution sum
+        for _, row in recs.iterrows():
+            total_pct = row["local_trust_pct"] + row["hub_popularity_pct"]
+            self.assertAlmostEqual(total_pct, 100.0, places=0)
 
 
 if __name__ == "__main__":

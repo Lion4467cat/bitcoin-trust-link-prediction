@@ -1,5 +1,9 @@
 # Enterprise Trust Recommendation & Link Prediction in the Bitcoin Web-of-Trust
 
+> **Course:** Social Network Analysis (SNA) — Alternative Assessment Task (AAT)  
+> **Department:** Department of Machine Learning  
+> **Topic:** Topological Link Prediction & Trust Partner Recommendation in Decentralized Cryptocurrency Networks
+
 An end-to-end Social Network Analysis (SNA) research project for the **Alternative Assessment Task (AAT)**. This project investigates topological link prediction and trust partner recommendation in decentralized, pseudonymous cryptocurrency trading networks.
 
 ---

@@ -3,6 +3,7 @@
 
 > **For:** 3-Person Student Team  
 > **Course:** Social Network Analysis (SNA) — Course Assessment Task (AAT)  
+> **Department:** Department of Machine Learning  
 > **How to use this doc:** Read this 10-minute guide with your 2 teammates before your presentation and viva. Everything you need to speak confidently is written out below.
 
 ---

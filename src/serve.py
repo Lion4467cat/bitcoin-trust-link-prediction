@@ -270,11 +270,13 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
     <header>
         <div>
             <h1>Bitcoin Web-of-Trust | Trust Partner Recommendation Dashboard</h1>
-            <p class="subtitle">Social Network Analysis (SNA) • Live Real-Time Topological Heuristics • Structural Balance Verification</p>
+            <p class="subtitle">Department of Machine Learning  •  Social Network Analysis (SNA)  •  Real-Time Topological Heuristics & Balance Verification</p>
             <div class="nav-links">
-                <a href="/reports/link_prediction_report.pdf" target="_blank" class="nav-btn">📄 Full Academic Report (PDF)</a>
+                <a href="/reports/link_prediction_report.pdf" target="_blank" class="nav-btn">📄 8-Page Academic Report (PDF)</a>
                 <a href="/slides/link_prediction_presentation.pdf" target="_blank" class="nav-btn">🖥️ Presentation Slides (PDF)</a>
                 <a href="/reports/team_presentation_study_guide.pdf" target="_blank" class="nav-btn">📘 Team Study Guide (PDF)</a>
+                <a href="/visualizations/temporal_link_prediction_comparison.png" target="_blank" class="nav-btn">⏱️ Temporal Backtest</a>
+                <a href="/visualizations/degree_assortativity_mixing.png" target="_blank" class="nav-btn">🕸️ Assortativity Mixing</a>
                 <a href="/visualizations/link_prediction_roc_curves.png" target="_blank" class="nav-btn">📈 ROC Curves</a>
                 <a href="/dataset_package/bitcoin_trust_dataset_package.zip" class="nav-btn">📦 Dataset Package</a>
             </div>
@@ -379,12 +381,13 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
                                 <th>Adamic-Adar</th>
                                 <th>PA Score</th>
                                 <th>Ensemble</th>
+                                <th>XAI Feature Attribution</th>
                                 <th>Community Role</th>
                                 <th>Structural Balance</th>
                             </tr>
                         </thead>
                         <tbody id="recBody">
-                            <tr><td colspan="9" style="text-align: center; color: var(--text-muted);">Computing real-time recommendations...</td></tr>
+                            <tr><td colspan="10" style="text-align: center; color: var(--text-muted);">Computing real-time recommendations...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -439,7 +442,8 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
                         <td style="color: var(--primary); font-weight: 600;">${Number(r.adamic_adar).toFixed(2)}</td>
                         <td>${Number(r.preferential_attachment).toLocaleString()}</td>
                         <td style="font-weight:600; color:var(--accent-purple);">${Number(r.ensemble_score).toFixed(4)}</td>
-                        <td><span style="background:#F1F5F9; color:#0F766E; padding:3px 8px; border-radius:12px; font-size:11px; font-weight:600; border:1px solid #CCFBF1;">${r.community_role || 'Intra-Cluster'}</span></td>
+                        <td><span style="font-size:10.5px; color:#334155; font-weight:600; background:#F8FAFC; padding:3px 7px; border-radius:6px; border:1px solid #CBD5E1; white-space:nowrap;">${r.feature_attribution || '80% Trust | 20% Hub'}</span></td>
+                        <td><span style="background:#F1F5F9; color:#0F766E; padding:3px 8px; border-radius:12px; font-size:11px; font-weight:600; border:1px solid #CCFBF1; white-space:nowrap;">${r.community_role || 'Intra-Cluster'}</span></td>
                         <td><span class="badge-balance">${r.structural_balance_status}</span></td>
                     `;
                     tbody.appendChild(tr);

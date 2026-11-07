@@ -152,16 +152,16 @@ Crucially, we audited our recommendations against **Heider's Structural Balance 
 > **Answer:** *"It proves that our pipeline is not overfitted to a single historical dataset. We generated a 25,000-node network with 136,000 edges matching Bitcoin's scale-free degree exponent and clustering coefficient. Our models still achieved an ROC-AUC of 0.7539 and 100% Precision@20, proving enterprise scalability."*
 
 ### Q9: What are the primary deliverables of your project?
-> **Answer:** *"All 5 official course deliverables: 
-1. Source code and executed Jupyter Notebook (`.ipynb`).  
-2. Zipped dataset package with SHA-256 manifest.  
-3. Visualizations (ROC curves, Precision@K plots, Cytoscape GraphML, interactive HTML).  
-4. An 8-page formal academic report (PDF).  
-5. A 13-slide widescreen presentation deck (.pptx and .pdf).  
-Plus an interactive web application running locally on port 5000."*
+> **Answer:** *"All official course deliverables: 
+1. Source code and executed Jupyter Notebook (`.ipynb`, 3.2 MB).  
+2. Zipped dataset package with SHA-256 manifest and centrality rankings (1.82 MB).  
+3. Visualizations (ROC curves, PR curves, Precision@K plots, Assortativity plot, K-Core topography, Cytoscape GraphML).  
+4. An exact 8-page formal academic report (PDF).  
+5. A 14-slide widescreen presentation deck (.pptx and .pdf).  
+Plus an interactive web application with Trust Chain Explorer running locally on port 5000."*
 
-### Q10: If you had more time, what would you improve?
-> **Answer:** *"We would incorporate temporal dynamics (predicting when a tie forms using timestamps) and Graph Neural Networks (such as Graph Convolutional Networks or Signed GCNs) to learn node embeddings directly from rating features alongside topological heuristics."*
+### Q10: How does your system compare against Graph Representation Learning (e.g. SVD / Node2Vec)?
+> **Answer:** *"We implemented a representation learning baseline using Low-Rank SVD Spectral Embeddings ($d=64$) and a Logistic Regression classifier on edge Hadamard products ($z_u \odot z_v$), achieving 0.9175 ROC-AUC. However, our SNA topological heuristics—Preferential Attachment (0.9505 AUC) and Rank Ensemble (0.9387 AUC, 0.8903 F1)—outperform representation learning, while requiring zero offline embedding training, running in linear time, and delivering 100% white-box explainability."*
 
 ---
 

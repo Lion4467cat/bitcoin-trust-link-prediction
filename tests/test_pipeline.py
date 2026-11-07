@@ -206,5 +206,36 @@ class TestKCoreAndConsensus(unittest.TestCase):
             self.assertLessEqual(info["votes"], 6)
 
 
+class TestEmbeddingAndProvenance(unittest.TestCase):
+    """Verify SVD graph embeddings and trust path chain provenance."""
+
+    def setUp(self):
+        self.G = nx.barabasi_albert_graph(n=80, m=3, seed=42)
+
+    def test_trust_path_provenance(self):
+        source, target = 0, 1
+        path = nx.shortest_path(self.G, source=source, target=target)
+        self.assertGreaterEqual(len(path), 2)
+        self.assertEqual(path[0], source)
+        self.assertEqual(path[-1], target)
+
+        common_neighbors = list(set(self.G.neighbors(source)).intersection(set(self.G.neighbors(target))))
+        for node in common_neighbors:
+            self.assertTrue(self.G.has_edge(source, node))
+            self.assertTrue(self.G.has_edge(node, target))
+
+    def test_svd_spectral_embedding_bounds(self):
+        import scipy.sparse as sp
+        from scipy.sparse.linalg import svds
+
+        nodes = list(self.G.nodes())
+        n = len(nodes)
+        A = nx.to_scipy_sparse_array(self.G, format="csr", dtype=float)
+        u, s, _ = svds(A, k=8)
+        emb = u * np.sqrt(s)
+        self.assertEqual(emb.shape, (n, 8))
+        self.assertTrue(np.all(np.isfinite(emb)))
+
+
 if __name__ == "__main__":
     unittest.main()

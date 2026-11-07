@@ -55,7 +55,7 @@ story += [
       "• <b>Enterprise Synthetic Data:</b> 25,000 nodes, 135,857 ties (Holme-Kim power-law clustering model).<br/>"
       "• <b>Train-Test Split:</b> 80% train / 20% test with Minimum Spanning Tree protection.<br/>"
       "• <b>Evaluation Size:</b> 3,647 positive test ties + 3,647 negative non-edges = 7,294 test instances.<br/>"
-      "• <b>Top ROC-AUC:</b> 0.9505 (Preferential Attachment) and 0.9387 (Ensemble Model).<br/>"
+      "• <b>Top ROC-AUC:</b> 0.9505 (Preferential Attachment) vs 0.9175 (SVD Embedding Baseline).<br/>"
       "• <b>Top-20 Precision:</b> 100.0% across PA, AA, and Common Neighbors.<br/>"
       "• <b>Structural Balance:</b> 100% of recommended links form balanced (+, +, +) triads.", "GuideCallout"),
     Spacer(1, 2*mm),
@@ -69,7 +69,7 @@ story += [
     p("<b>Q4: How does Heider's Structural Balance Theory strengthen the recommendations?</b><br/>"
       "<i>Answer:</i> In signed trust networks, cognitive tension occurs in unbalanced triads like (+, +, -) ('my friend trusts my enemy'). We verified that 100% of our top recommended links close (+, +, +) triads with mutual partners, ensuring newly introduced connections reinforce community stability.", "GuideBody"),
     p("<b>Q5: What are the primary deliverables of your project?</b><br/>"
-      "<i>Answer:</i> 1. Source code & executed notebook (.ipynb); 2. Dataset package with SHA-256 manifest; 3. Visualizations (ROC curves, Precision@K bar charts, Cytoscape GraphML, HTML demo); 4. 8-page academic report (PDF); 5. 13-slide 3-speaker presentation deck (.pptx and .pdf); plus a local interactive web UI.", "GuideBody")
+      "<i>Answer:</i> 1. Source code & executed notebook (.ipynb); 2. Dataset package with SHA-256 manifest; 3. Visualizations (ROC curves, Precision@K bar charts, Cytoscape GraphML, HTML demo); 4. 8-page academic report (PDF); 5. 14-slide 3-speaker presentation deck (.pptx and .pdf); plus a local interactive web UI with Trust Chain Explorer.", "GuideBody")
 ]
 
 doc.build(story)

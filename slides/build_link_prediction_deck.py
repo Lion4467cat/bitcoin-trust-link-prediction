@@ -488,14 +488,15 @@ p = tf.paragraphs[0]; p.text = "Held-Out Test Scoreboard (3,647 Pairs)"; p.font.
 p = tf.add_paragraph()
 p.text = "• Preferential Attachment (PA):\n" \
          "  ROC-AUC: 0.9505  |  F1: 0.8864  |  P@20: 100.0%\n\n" \
-         "• Ensemble Model:\n" \
+         "• Ensemble Model (Borda Rank Sum):\n" \
          "  ROC-AUC: 0.9387  |  F1: 0.8903  |  P@20: 95.0%\n\n" \
-         "• Adamic-Adar (AA) & Resource Allocation (RA):\n" \
+         "• Representation Learning Baseline (SVD + LogReg):\n" \
+         "  ROC-AUC: 0.9175  |  AP: 0.9377  |  P@20: 100.0%\n\n" \
+         "• Adamic-Adar (AA) & Common Neighbors (CN):\n" \
          "  ROC-AUC: ~0.836  |  F1: 0.6667  |  P@20: 100.0%\n\n" \
          "• Chronological Temporal Backtest (2010–2016):\n" \
-         "  PA AUC: 0.8285  |  Ensemble: 0.8150  |  P@20: 100.0%\n" \
-         "  Proves 100% precision with zero lookahead bias!"
-p.font.size = Pt(11); p.font.color.rgb = C_TEXT
+         "  PA: 0.8285  |  Ensemble: 0.8150  |  100% P@20 (Zero Lookahead)!"
+p.font.size = Pt(10); p.font.color.rgb = C_TEXT
 
 roc_img = ROOT / "visualizations" / "link_prediction_roc_curves.png"
 if roc_img.exists():

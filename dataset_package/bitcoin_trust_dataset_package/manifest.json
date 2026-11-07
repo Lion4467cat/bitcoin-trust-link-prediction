@@ -9,6 +9,7 @@
     "processed/link_prediction_metrics.json": "d225df39f940cad0c3b198a951b638a064a3dab158709d206ca218049aa76cdc",
     "processed/temporal_link_prediction_metrics.json": "fbb40d9bfc90e61c8298a1bffd0b20a255717d8a4e01116310676e02ec0a7f16",
     "processed/trader_centrality_rankings.csv": "42b51d1c07d8eeb53ab31a9056116265fa9766525a99522dec463692ae2eac75",
+    "processed/representation_learning_comparison.json": "885360ceb36d22b90fb24ba0f6cbfa38744dfebfdc7f7733e3496c2f5bea8296",
     "README.md": "3f63de56d9be7b01db267b7ed602f4475f4f775edd9e4a46ded63f7c8d5b2213"
   },
   "statistics": {

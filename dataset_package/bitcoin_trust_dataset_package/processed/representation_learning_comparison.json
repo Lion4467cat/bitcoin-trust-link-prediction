@@ -1,0 +1,56 @@
+{
+  "Representation Learning (SVD Hadamard + LogReg)": {
+    "category": "Representation Learning",
+    "auc": 0.9175,
+    "ap": 0.9377,
+    "f1": 0.4522,
+    "p20": 1.0,
+    "complexity": "O(N d^2 + M d)",
+    "explainability": "Low (Latent Projections)"
+  },
+  "Unsupervised SVD Dot-Product": {
+    "category": "Representation Learning",
+    "auc": 0.7595,
+    "ap": 0.8457,
+    "f1": 0.7521,
+    "p20": 1.0,
+    "complexity": "O(N d^2)",
+    "explainability": "Moderate (Spectral Overlap)"
+  },
+  "Preferential Attachment": {
+    "category": "Topological Heuristic",
+    "auc": 0.9505,
+    "ap": 0.9532,
+    "f1": 0.8864,
+    "p20": 1.0,
+    "complexity": "O(1) Lookup",
+    "explainability": "High (Liquidity Hub Attraction)"
+  },
+  "Ensemble Model": {
+    "category": "Topological Heuristic",
+    "auc": 0.9387,
+    "ap": 0.9412,
+    "f1": 0.8903,
+    "p20": 0.95,
+    "complexity": "O(deg_u + deg_v)",
+    "explainability": "High (Ranked Local + Global)"
+  },
+  "Adamic-Adar Index": {
+    "category": "Topological Heuristic",
+    "auc": 0.8366,
+    "ap": 0.8401,
+    "f1": 0.6667,
+    "p20": 1.0,
+    "complexity": "O(deg_u + deg_v)",
+    "explainability": "High (Rare Mutual Peer Closure)"
+  },
+  "Common Neighbors": {
+    "category": "Topological Heuristic",
+    "auc": 0.8335,
+    "ap": 0.8378,
+    "f1": 0.6667,
+    "p20": 1.0,
+    "complexity": "O(deg_u + deg_v)",
+    "explainability": "High (Direct Triadic Overlap)"
+  }
+}

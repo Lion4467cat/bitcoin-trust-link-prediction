@@ -25,6 +25,8 @@ if (ROOT / "outputs" / "temporal_link_prediction_metrics.json").exists():
     shutil.copy2(ROOT / "outputs" / "temporal_link_prediction_metrics.json", PACKAGE / "processed" / "temporal_link_prediction_metrics.json")
 if (ROOT / "outputs" / "trader_centrality_rankings.csv").exists():
     shutil.copy2(ROOT / "outputs" / "trader_centrality_rankings.csv", PACKAGE / "processed" / "trader_centrality_rankings.csv")
+if (ROOT / "outputs" / "representation_learning_comparison.json").exists():
+    shutil.copy2(ROOT / "outputs" / "representation_learning_comparison.json", PACKAGE / "processed" / "representation_learning_comparison.json")
 
 readme = """# Bitcoin Web-of-Trust Dataset Package (Empirical & Enterprise Synthetic)
 
@@ -62,6 +64,7 @@ files = [
     PACKAGE / "processed" / "link_prediction_metrics.json",
     PACKAGE / "processed" / "temporal_link_prediction_metrics.json",
     PACKAGE / "processed" / "trader_centrality_rankings.csv",
+    PACKAGE / "processed" / "representation_learning_comparison.json",
     PACKAGE / "README.md"
 ]
 

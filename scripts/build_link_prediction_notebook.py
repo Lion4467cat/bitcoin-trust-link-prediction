@@ -163,6 +163,29 @@ To eliminate any potential lookahead bias in random cross-validation, we conduct
 
     nbformat.v4.new_code_cell("""display(Image(filename=str(ROOT / "visualizations" / "temporal_link_prediction_comparison.png")))"""),
 
+    nbformat.v4.new_markdown_cell(r"""### 6.2 Topological Heuristics vs. Graph Representation Learning Baseline
+We benchmark our SNA topological heuristics against modern **Graph Representation Learning**:
+* **Architecture:** Truncated SVD matrix factorization generating $d=64$ low-rank spectral node embeddings, followed by a supervised Logistic Regression classifier trained on edge Hadamard products ($z_u \odot z_v$).
+* **Comparative Finding:** While SVD Representation Learning achieves a strong **0.9175 ROC-AUC**, standalone **Preferential Attachment (0.9505 ROC-AUC)** and the **Rank Ensemble (0.9387 ROC-AUC, 0.8903 F1)** outperform it. Crucially, SNA heuristics achieve this with $O(1)$ to $O(d_u + d_v)$ computational complexity, zero offline embedding training, and 100% white-box explainability."""),
+
+    nbformat.v4.new_code_cell("""with open(ROOT / "outputs" / "representation_learning_comparison.json") as f:
+    repr_data = json.load(f)
+repr_rows = []
+for model_name, info in repr_data.items():
+    repr_rows.append({
+        "Model": model_name,
+        "Category": info["category"],
+        "ROC-AUC": info["auc"],
+        "Avg Precision": info["ap"],
+        "F1-Score": info["f1"],
+        "P@20": f"{info['p20']*100:.0f}%",
+        "Complexity": info["complexity"],
+        "Explainability": info["explainability"]
+    })
+repr_df = pd.DataFrame(repr_rows)
+display(repr_df)
+display(Image(filename=str(ROOT / "visualizations" / "topological_vs_embedding_comparison.png")))"""),
+
     nbformat.v4.new_markdown_cell("""## 7. Recommendation & Interpretation: Top-20 Predicted Links
 
 Using the trained models, we generate and filter the **Top-20 Recommended Trust Links** for Target Trader #1 (one of the primary market participants). For each recommendation, we analyze:

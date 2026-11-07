@@ -1,4 +1,4 @@
-.PHONY: help test pipeline temporal assort centrality notebook report slides study-guide package build-all serve status
+.PHONY: help test pipeline temporal assort centrality embeddings notebook report slides study-guide package build-all serve status
 
 PYTHON := MPLCONFIGDIR=/tmp .venv/bin/python
 PYTEST := MPLCONFIGDIR=/tmp .venv/bin/pytest
@@ -12,6 +12,7 @@ help:
 	@echo " make temporal    : Execute chronological temporal backtest (2010-2016)"
 	@echo " make assort      : Plot degree assortativity mixing topology"
 	@echo " make centrality  : Compute K-core shell decomposition & centralities"
+	@echo " make embeddings  : Benchmark Graph Representation Learning (SVD baseline)"
 	@echo " make notebook    : Recompile & execute master Jupyter notebook"
 	@echo " make report      : Recompile formal 8-page academic PDF report"
 	@echo " make slides      : Recompile 14-slide presentation deck (PPTX & PDF)"
@@ -37,6 +38,9 @@ assort:
 centrality:
 	$(PYTHON) scripts/compute_k_core_centralities.py
 
+embeddings:
+	$(PYTHON) src/embedding_baseline.py
+
 notebook:
 	$(PYTHON) scripts/build_link_prediction_notebook.py
 
@@ -52,7 +56,7 @@ study-guide:
 package:
 	$(PYTHON) scripts/package_dataset.py
 
-build-all: pipeline temporal assort centrality report slides study-guide notebook package test
+build-all: pipeline temporal assort centrality embeddings report slides study-guide notebook package test
 	@echo "All deliverables successfully built and verified!"
 
 serve:

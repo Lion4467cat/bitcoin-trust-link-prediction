@@ -186,9 +186,9 @@ def plot_evaluation_charts(results: dict, G_full: nx.Graph, dataset_label: str =
     plt.ylim(0, 1.15)
     plt.legend(loc="upper right", frameon=True, facecolor="white", edgecolor="#E2E8F0", fontsize=8.5)
     plt.grid(axis="y", linestyle="--", alpha=0.3)
-    plt.tight_layout()
-    plt.savefig(VISUALIZATIONS_DIR / "link_prediction_precision_at_k.png", dpi=220, facecolor="#F8FAFC")
-    plt.savefig(VISUALIZATIONS_DIR / "link_prediction_precision_at_k.svg", facecolor="#F8FAFC")
+    plt.tight_layout(pad=2.0)
+    plt.savefig(VISUALIZATIONS_DIR / "link_prediction_precision_at_k.png", dpi=220, facecolor="#F8FAFC", bbox_inches="tight")
+    plt.savefig(VISUALIZATIONS_DIR / "link_prediction_precision_at_k.svg", facecolor="#F8FAFC", bbox_inches="tight")
     plt.close()
     
     # 4. Log-Log Degree Distribution (Power-Law Scale-Free Proof)

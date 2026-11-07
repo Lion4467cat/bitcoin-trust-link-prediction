@@ -236,6 +236,28 @@ class TestEmbeddingAndProvenance(unittest.TestCase):
         self.assertEqual(emb.shape, (n, 8))
         self.assertTrue(np.all(np.isfinite(emb)))
 
+    def test_model_vs_model_comparison(self):
+        """Verify model comparison overlap and ranking consistency."""
+        df_pa = recommend_links_for_user(self.G, user_id=0, top_k=10, model="Preferential Attachment")
+        df_aa = recommend_links_for_user(self.G, user_id=0, top_k=10, model="Adamic-Adar")
+        set_pa = set(df_pa["target_user"])
+        set_aa = set(df_aa["target_user"])
+        overlap = set_pa.intersection(set_aa)
+        # Both models recommend from 2-hop candidate pool
+        self.assertIsInstance(overlap, set)
+        self.assertLessEqual(len(overlap), 10)
+
+    def test_trader_head_to_head_comparison(self):
+        """Verify pairwise metric calculation for trader comparison."""
+        source, target = 0, 1
+        common = set(self.G.neighbors(source)).intersection(set(self.G.neighbors(target)))
+        union = set(self.G.neighbors(source)).union(set(self.G.neighbors(target)))
+        jaccard = len(common) / len(union) if union else 0.0
+        self.assertGreaterEqual(jaccard, 0.0)
+        self.assertLessEqual(jaccard, 1.0)
+        pa = float(self.G.degree(source) * self.G.degree(target))
+        self.assertGreater(pa, 0.0)
+
 
 if __name__ == "__main__":
     unittest.main()

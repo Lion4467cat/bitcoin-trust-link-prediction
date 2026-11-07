@@ -1,4 +1,4 @@
-"""Build a highly detailed, 14-slide 3-speaker 16:9 presentation deck and PDF export."""
+"""Build a publication-grade, 100% light-themed, 14-slide 3-speaker 16:9 presentation deck and PDF export."""
 from pathlib import Path
 import json
 import subprocess
@@ -6,6 +6,7 @@ from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
+from pptx.enum.text import PP_ALIGN
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT_PPTX = ROOT / "slides" / "link_prediction_presentation.pptx"
@@ -19,19 +20,28 @@ prs.slide_width = Inches(13.333)
 prs.slide_height = Inches(7.5)
 blank_layout = prs.slide_layouts[6]
 
-# Theme Colors (Professional Light Theme with Slate & Teal Accents)
-C_NAVY = RGBColor(15, 23, 42)        # #0F172A
-C_TEAL = RGBColor(13, 148, 136)      # #0D9488
-C_TEAL_DARK = RGBColor(15, 118, 110) # #0F766E
-C_GOLD = RGBColor(217, 119, 6)       # #D97706
-C_CORAL = RGBColor(225, 29, 72)      # #E11D48
-C_PURPLE = RGBColor(99, 102, 241)    # #6366F1
-C_TEXT = RGBColor(30, 41, 59)        # #1E293B
-C_MUTED = RGBColor(100, 116, 139)    # #64748B
-C_WHITE = RGBColor(255, 255, 255)
-C_CARD_BG = RGBColor(255, 255, 255)
-C_BORDER = RGBColor(226, 232, 240)   # #E2E8F0
-C_BG = RGBColor(248, 250, 252)       # #F8FAFC
+# =============================================================
+# Clean Professional Light Palette (Slate & Tailored Accents)
+# =============================================================
+C_BG = RGBColor(248, 250, 252)        # Slate 50 (#F8FAFC)
+C_WHITE = RGBColor(255, 255, 255)    # Pure White
+C_BORDER = RGBColor(226, 232, 240)   # Slate 200 (#E2E8F0)
+C_BORDER_DARK = RGBColor(203, 213, 225) # Slate 300 (#CBD5E1)
+C_NAVY = RGBColor(15, 23, 42)        # Slate 900 (#0F172A)
+C_SLATE_DARK = RGBColor(30, 41, 59)  # Slate 800 (#1E293B)
+C_TEXT = RGBColor(51, 65, 85)        # Slate 700 (#334155)
+C_MUTED = RGBColor(100, 116, 139)    # Slate 500 (#64748B)
+
+# Semantic Accent Colors
+C_TEAL = RGBColor(13, 148, 136)      # Teal 600 (#0D9488)
+C_TEAL_DARK = RGBColor(15, 118, 110) # Teal 700 (#0F766E)
+C_TEAL_LIGHT = RGBColor(240, 253, 250) # Teal 50
+C_GOLD = RGBColor(217, 119, 6)       # Amber 600 (#D97706)
+C_GOLD_LIGHT = RGBColor(254, 243, 199) # Amber 50
+C_CORAL = RGBColor(225, 29, 72)      # Rose 600 (#E11D48)
+C_PURPLE = RGBColor(99, 102, 241)    # Indigo 500 (#6366F1)
+C_PURPLE_LIGHT = RGBColor(238, 242, 255) # Indigo 50
+C_PILL_BG = RGBColor(241, 245, 249)  # Slate 100 (#F1F5F9)
 
 def apply_background(slide):
     bg = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, Inches(13.333), Inches(7.5))
@@ -40,106 +50,252 @@ def apply_background(slide):
     bg.line.fill.background()
     return bg
 
-def add_header(slide, title_text, speaker_label, kicker="BITCOIN WEB-OF-TRUST  |  LINK PREDICTION & RECOMMENDATION"):
+def add_header(slide, title_text, speaker_label, slide_num=None, kicker="BITCOIN WEB-OF-TRUST  |  LINK PREDICTION & RECOMMENDATION"):
     apply_background(slide)
     
-    # Top color rule
-    top_bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, Inches(13.333), Inches(0.12))
+    # Top primary teal accent line
+    top_bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, Inches(13.333), Inches(0.08))
     top_bar.fill.solid()
     top_bar.fill.fore_color.rgb = C_TEAL
     top_bar.line.fill.background()
     
-    # Kicker + Speaker Badge
-    tx_kicker = slide.shapes.add_textbox(Inches(0.8), Inches(0.32), Inches(8.5), Inches(0.3))
-    p_k = tx_kicker.text_frame.paragraphs[0]
+    # Kicker
+    tx_kicker = slide.shapes.add_textbox(Inches(0.8), Inches(0.28), Inches(8.0), Inches(0.26))
+    tf_k = tx_kicker.text_frame
+    tf_k.word_wrap = True
+    tf_k.margin_left = tf_k.margin_right = tf_k.margin_top = tf_k.margin_bottom = 0
+    p_k = tf_k.paragraphs[0]
     p_k.text = kicker
-    p_k.font.size = Pt(11)
+    p_k.font.size = Pt(10)
     p_k.font.bold = True
-    p_k.font.color.rgb = C_TEAL
+    p_k.font.color.rgb = C_TEAL_DARK
     
-    # Speaker pill badge
-    spk_card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(9.4), Inches(0.30), Inches(3.133), Inches(0.38))
+    # Speaker badge: clean flat badge, no drop shadow, perfectly aligned
+    badge_w = Inches(3.4)
+    badge_h = Inches(0.36)
+    spk_card = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(9.133), Inches(0.28), badge_w, badge_h)
     spk_card.fill.solid()
-    spk_card.fill.fore_color.rgb = RGBColor(241, 245, 249)
-    spk_card.line.color.rgb = C_TEAL
-    spk_card.line.width = Pt(1)
-    tx_spk = slide.shapes.add_textbox(Inches(9.4), Inches(0.30), Inches(3.133), Inches(0.38))
-    p_spk = tx_spk.text_frame.paragraphs[0]
+    spk_card.fill.fore_color.rgb = C_PILL_BG
+    spk_card.line.color.rgb = C_BORDER_DARK
+    spk_card.line.width = Pt(0.75)
+    
+    tx_spk = slide.shapes.add_textbox(Inches(9.133), Inches(0.28), badge_w, badge_h)
+    tf_spk = tx_spk.text_frame
+    tf_spk.margin_left = tf_spk.margin_right = tf_spk.margin_top = tf_spk.margin_bottom = 0
+    p_spk = tf_spk.paragraphs[0]
     p_spk.text = speaker_label
+    p_spk.alignment = PP_ALIGN.CENTER
     p_spk.font.size = Pt(10.5)
     p_spk.font.bold = True
     p_spk.font.color.rgb = C_TEAL_DARK
     
-    # Title
-    tx_title = slide.shapes.add_textbox(Inches(0.8), Inches(0.68), Inches(11.733), Inches(0.65))
-    p_t = tx_title.text_frame.paragraphs[0]
+    # Slide Title (clean single-line fit with 20pt bold)
+    tx_title = slide.shapes.add_textbox(Inches(0.8), Inches(0.64), Inches(11.733), Inches(0.60))
+    tf_t = tx_title.text_frame
+    tf_t.word_wrap = True
+    tf_t.margin_left = tf_t.margin_right = tf_t.margin_top = tf_t.margin_bottom = 0
+    p_t = tf_t.paragraphs[0]
     p_t.text = title_text
-    p_t.font.size = Pt(22)
+    p_t.font.size = Pt(20)
     p_t.font.bold = True
     p_t.font.color.rgb = C_NAVY
     
+    # Divider line under title
+    div = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(1.30), Inches(11.733), Inches(0.012))
+    div.fill.solid()
+    div.fill.fore_color.rgb = C_BORDER
+    div.line.fill.background()
+    
     # Footer rule
-    footer_bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(7.0), Inches(11.733), Inches(0.015))
+    footer_bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(7.05), Inches(11.733), Inches(0.012))
     footer_bar.fill.solid()
     footer_bar.fill.fore_color.rgb = C_BORDER
     footer_bar.line.fill.background()
     
-    tx_f = slide.shapes.add_textbox(Inches(0.8), Inches(7.05), Inches(11.733), Inches(0.3))
-    p_f = tx_f.text_frame.paragraphs[0]
+    tx_f = slide.shapes.add_textbox(Inches(0.8), Inches(7.12), Inches(9.5), Inches(0.28))
+    tf_f = tx_f.text_frame
+    tf_f.margin_left = tf_f.margin_right = tf_f.margin_top = tf_f.margin_bottom = 0
+    p_f = tf_f.paragraphs[0]
     p_f.text = "Social Network Analysis (SNA) Course Assessment Task (AAT)  •  Department of Machine Learning"
-    p_f.font.size = Pt(9.5)
+    p_f.font.size = Pt(9)
     p_f.font.color.rgb = C_MUTED
+    
+    if slide_num:
+        tx_num = slide.shapes.add_textbox(Inches(10.5), Inches(7.12), Inches(2.0), Inches(0.28))
+        tf_num = tx_num.text_frame
+        tf_num.margin_left = tf_num.margin_right = tf_num.margin_top = tf_num.margin_bottom = 0
+        p_num = tf_num.paragraphs[0]
+        p_num.text = f"Slide {slide_num} of 14"
+        p_num.alignment = PP_ALIGN.RIGHT
+        p_num.font.size = Pt(9)
+        p_num.font.color.rgb = C_MUTED
 
-def add_card(slide, left, top, width, height, bg_color=C_CARD_BG, border_color=C_BORDER):
-    card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
+def add_card(slide, left, top, width, height, bg_color=C_WHITE, border_color=C_BORDER, accent_top=None):
+    """Add a modern crisp enterprise card (flat rectangle, hairline border, optional colored top accent)."""
+    card = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, left, top, width, height)
     card.fill.solid()
     card.fill.fore_color.rgb = bg_color
     card.line.color.rgb = border_color
     card.line.width = Pt(1)
+    
+    if accent_top:
+        strip = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, left, top, width, Inches(0.05))
+        strip.fill.solid()
+        strip.fill.fore_color.rgb = accent_top
+        strip.line.fill.background()
     return card
 
+def add_image_card(slide, img_path, left, top, width, height, title_text, takeaway_badge, accent_color=C_TEAL):
+    """Container card for figures with a header title, framed image, and key takeaway badge."""
+    add_card(slide, left, top, width, height, bg_color=C_WHITE, border_color=C_BORDER, accent_top=accent_color)
+    
+    # Title inside card
+    tx_title = slide.shapes.add_textbox(left + Inches(0.2), top + Inches(0.12), width - Inches(0.4), Inches(0.32))
+    tf = tx_title.text_frame
+    tf.word_wrap = True
+    tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+    p = tf.paragraphs[0]
+    p.text = title_text
+    p.font.size = Pt(12)
+    p.font.bold = True
+    p.font.color.rgb = C_NAVY
+    
+    # Centered image
+    img_top = top + Inches(0.50)
+    img_h = height - Inches(1.10)
+    img_w = width - Inches(0.40)
+    slide.shapes.add_picture(str(img_path), left + Inches(0.2), img_top, img_w, img_h)
+    
+    # Takeaway badge at the bottom
+    badge_y = top + height - Inches(0.48)
+    badge = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, left + Inches(0.2), badge_y, width - Inches(0.4), Inches(0.36))
+    badge.fill.solid()
+    badge.fill.fore_color.rgb = C_PILL_BG
+    badge.line.color.rgb = C_BORDER
+    badge.line.width = Pt(0.75)
+    
+    tx_b = slide.shapes.add_textbox(left + Inches(0.25), badge_y + Inches(0.06), width - Inches(0.5), Inches(0.26))
+    tf_b = tx_b.text_frame
+    tf_b.margin_left = tf_b.margin_right = tf_b.margin_top = tf_b.margin_bottom = 0
+    p_b = tf_b.paragraphs[0]
+    p_b.text = takeaway_badge
+    p_b.alignment = PP_ALIGN.CENTER
+    p_b.font.size = Pt(9.5)
+    p_b.font.bold = True
+    p_b.font.color.rgb = accent_color
+
 # =============================================================
-# SLIDE 1: Title Slide (All Speakers)
+# SLIDE 1: Title Hero Slide (100% LIGHT THEMED)
 # =============================================================
 slide1 = prs.slides.add_slide(blank_layout)
-bg1 = slide1.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, Inches(13.333), Inches(7.5))
-bg1.fill.solid()
-bg1.fill.fore_color.rgb = C_NAVY
-bg1.line.fill.background()
+apply_background(slide1)
 
-tbar1 = slide1.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(1.0), Inches(1.2), Inches(0.15), Inches(4.8))
-tbar1.fill.solid()
-tbar1.fill.fore_color.rgb = C_TEAL
-tbar1.line.fill.background()
+# Top primary teal accent line
+top_bar = slide1.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, Inches(13.333), Inches(0.10))
+top_bar.fill.solid()
+top_bar.fill.fore_color.rgb = C_TEAL
+top_bar.line.fill.background()
 
-tx1 = slide1.shapes.add_textbox(Inches(1.4), Inches(1.2), Inches(10.8), Inches(3.2))
-tf1 = tx1.text_frame
-tf1.word_wrap = True
+# Department & Course Badge (Pill)
+dept_badge = slide1.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(0.55), Inches(5.8), Inches(0.38))
+dept_badge.fill.solid()
+dept_badge.fill.fore_color.rgb = C_TEAL_LIGHT
+dept_badge.line.color.rgb = C_TEAL
+dept_badge.line.width = Pt(1)
 
-p = tf1.paragraphs[0]
-p.text = "SOCIAL NETWORK ANALYSIS  |  APPLIED ASSESSMENT TASK (AAT)"
-p.font.size = Pt(13); p.font.bold = True; p.font.color.rgb = C_GOLD
+tx_dept = slide1.shapes.add_textbox(Inches(0.9), Inches(0.60), Inches(5.6), Inches(0.30))
+tf_dept = tx_dept.text_frame
+tf_dept.margin_left = tf_dept.margin_right = tf_dept.margin_top = tf_dept.margin_bottom = 0
+p = tf_dept.paragraphs[0]
+p.text = "DEPARTMENT OF MACHINE LEARNING  •  SNA COURSE ASSESSMENT TASK (AAT)"
+p.font.size = Pt(9.5)
+p.font.bold = True
+p.font.color.rgb = C_TEAL_DARK
 
-p = tf1.add_paragraph()
+# Hero Title Box
+tx_hero = slide1.shapes.add_textbox(Inches(0.8), Inches(1.10), Inches(11.733), Inches(1.6))
+tf_hero = tx_hero.text_frame
+tf_hero.word_wrap = True
+tf_hero.margin_left = tf_hero.margin_right = tf_hero.margin_top = tf_hero.margin_bottom = 0
+
+p = tf_hero.paragraphs[0]
 p.text = "Enterprise Trust Recommendation & Link Prediction"
-p.font.size = Pt(32); p.font.bold = True; p.font.color.rgb = C_WHITE
+p.font.size = Pt(30)
+p.font.bold = True
+p.font.color.rgb = C_NAVY
 
-p = tf1.add_paragraph()
-p.text = "Evaluating Common Neighbors, Jaccard, Adamic-Adar, Resource Allocation, and Preferential Attachment in the Bitcoin Web-of-Trust"
-p.font.size = Pt(15); p.font.color.rgb = RGBColor(203, 213, 225)
+p = tf_hero.add_paragraph()
+p.text = "Evaluating Topological Heuristics, Structural Balance & Normalized Rank Ensembles in the Bitcoin Web-of-Trust"
+p.font.size = Pt(14.5)
+p.font.color.rgb = C_MUTED
+p.space_before = Pt(6)
 
-tx1_team = slide1.shapes.add_textbox(Inches(1.4), Inches(4.5), Inches(10.8), Inches(2.2))
-tf1_t = tx1_team.text_frame
+# 3-Speaker Collaborative Plan (3 Side-by-Side Cards)
+spk_card_w = Inches(3.64)
+spk_card_h = Inches(2.90)
+spk_y = Inches(2.80)
 
-p = tf1_t.paragraphs[0]
-p.text = "Collaborative 3-Speaker Technical Presentation Plan:"
-p.font.size = Pt(13); p.font.bold = True; p.font.color.rgb = C_GOLD
+# Card 1: Speaker 1
+add_card(slide1, Inches(0.8), spk_y, spk_card_w, spk_card_h, accent_top=C_NAVY)
+tx = slide1.shapes.add_textbox(Inches(1.0), spk_y + Inches(0.20), spk_card_w - Inches(0.4), spk_card_h - Inches(0.3))
+tf = tx.text_frame; tf.word_wrap = True
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+p = tf.paragraphs[0]; p.text = "SPEAKER 1"; p.font.size = Pt(11); p.font.bold = True; p.font.color.rgb = C_TEAL_DARK
+p = tf.add_paragraph(); p.text = "Foundations & Data Topology"; p.font.size = Pt(14); p.font.bold = True; p.font.color.rgb = C_NAVY
+p = tf.add_paragraph(); p.text = "Slides 1 – 5  •  Core Scope:"; p.font.size = Pt(10.5); p.font.bold = True; p.font.color.rgb = C_MUTED; p.space_before = Pt(4)
+p = tf.add_paragraph(); p.text = "• OTC Decentralized Trust Problem\n• Stanford SNAP Dataset Unification\n• Scale-Free Invariants (γ ≈ 2.1)\n• Disassortativity & 19-Core Nucleus\n• 80/20 MST Spanning Connectivity"; p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
 
-p = tf1_t.add_paragraph()
-p.text = "• Speaker 1: Foundations, Problem Definition, Dataset Architecture, Scale-Free Topology & 80/20 MST Split (Slides 1–5)\n" \
-         "• Speaker 2: SNA Link Prediction Algorithms (CN, Jaccard, AA, RA, PA) & Ensemble Mathematical Models (Slides 6–9)\n" \
-         "• Speaker 3: Empirical Validation Benchmark (ROC/PR), Precision@K, Top-20 Demo, Community Roles & Viva (Slides 10–14)"
-p.font.size = Pt(12); p.font.color.rgb = C_WHITE
+# Card 2: Speaker 2
+add_card(slide1, Inches(4.84), spk_y, spk_card_w, spk_card_h, accent_top=C_TEAL)
+tx = slide1.shapes.add_textbox(Inches(5.04), spk_y + Inches(0.20), spk_card_w - Inches(0.4), spk_card_h - Inches(0.3))
+tf = tx.text_frame; tf.word_wrap = True
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+p = tf.paragraphs[0]; p.text = "SPEAKER 2"; p.font.size = Pt(11); p.font.bold = True; p.font.color.rgb = C_TEAL_DARK
+p = tf.add_paragraph(); p.text = "Algorithms & Mathematical Models"; p.font.size = Pt(14); p.font.bold = True; p.font.color.rgb = C_NAVY
+p = tf.add_paragraph(); p.text = "Slides 6 – 9  •  Core Scope:"; p.font.size = Pt(10.5); p.font.bold = True; p.font.color.rgb = C_MUTED; p.space_before = Pt(4)
+p = tf.add_paragraph(); p.text = "• Triadic Closure Mechanics\n• Common Neighbors & Jaccard\n• Adamic-Adar Logarithmic Penalty\n• Resource Allocation Linear Penalty\n• Normalized Rank Ensemble Model"; p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
+
+# Card 3: Speaker 3
+add_card(slide1, Inches(8.88), spk_y, spk_card_w, spk_card_h, accent_top=C_PURPLE)
+tx = slide1.shapes.add_textbox(Inches(9.08), spk_y + Inches(0.20), spk_card_w - Inches(0.4), spk_card_h - Inches(0.3))
+tf = tx.text_frame; tf.word_wrap = True
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+p = tf.paragraphs[0]; p.text = "SPEAKER 3"; p.font.size = Pt(11); p.font.bold = True; p.font.color.rgb = C_TEAL_DARK
+p = tf.add_paragraph(); p.text = "Validation, UI Demo & Defense"; p.font.size = Pt(14); p.font.bold = True; p.font.color.rgb = C_NAVY
+p = tf.add_paragraph(); p.text = "Slides 10 – 14  •  Core Scope:"; p.font.size = Pt(10.5); p.font.bold = True; p.font.color.rgb = C_MUTED; p.space_before = Pt(4)
+p = tf.add_paragraph(); p.text = "• Held-Out ROC & Precision Scoreboard\n• Precision@K Enterprise Validation\n• Top-20 Recommendation Engine\n• Heider Structural Balance Proof\n• Interactive Dashboard & Viva Defense"; p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
+
+# Metric Ribbon along bottom
+ribbon_y = Inches(5.90)
+ribbon_w = Inches(2.78)
+ribbon_h = Inches(0.95)
+
+metrics_data = [
+    ("9,207", "Traders Modeled", C_NAVY),
+    ("31,050", "Verified Trust Ties", C_TEAL),
+    ("0.9505", "Dominant ROC-AUC (PA)", C_GOLD),
+    ("100%", "Precision@20 (Local)", C_PURPLE)
+]
+
+for idx, (val, lbl, col) in enumerate(metrics_data):
+    r_left = Inches(0.8 + idx * 2.98)
+    add_card(slide1, r_left, ribbon_y, ribbon_w, ribbon_h, bg_color=C_WHITE, border_color=C_BORDER)
+    tx_m = slide1.shapes.add_textbox(r_left + Inches(0.15), ribbon_y + Inches(0.10), ribbon_w - Inches(0.3), ribbon_h - Inches(0.2))
+    tf_m = tx_m.text_frame; tf_m.word_wrap = True
+    tf_m.margin_left = tf_m.margin_right = tf_m.margin_top = tf_m.margin_bottom = 0
+    p = tf_m.paragraphs[0]; p.text = val; p.font.size = Pt(18); p.font.bold = True; p.font.color.rgb = col
+    p = tf_m.add_paragraph(); p.text = lbl; p.font.size = Pt(9.5); p.font.bold = True; p.font.color.rgb = C_MUTED
+
+# Slide 1 Footer
+div1 = slide1.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(7.05), Inches(11.733), Inches(0.012))
+div1.fill.solid(); div1.fill.fore_color.rgb = C_BORDER; div1.line.fill.background()
+
+tx_f1 = slide1.shapes.add_textbox(Inches(0.8), Inches(7.12), Inches(11.733), Inches(0.28))
+tf_f1 = tx_f1.text_frame
+tf_f1.margin_left = tf_f1.margin_right = tf_f1.margin_top = tf_f1.margin_bottom = 0
+p = tf_f1.paragraphs[0]
+p.text = "Social Network Analysis (SNA) Course Assessment Task (AAT)  •  Department of Machine Learning  •  Slide 1 of 14"
+p.font.size = Pt(9); p.font.color.rgb = C_MUTED
 
 slide1.notes_slide.notes_text_frame.text = (
     "ALL SPEAKERS INTRODUCTION:\n"
@@ -151,38 +307,48 @@ slide1.notes_slide.notes_text_frame.text = (
 )
 
 # =============================================================
-# SLIDE 2: Speaker 1 - Problem Definition
+# SLIDE 2: Speaker 1 - Problem Formulation
 # =============================================================
 slide2 = prs.slides.add_slide(blank_layout)
-add_header(slide2, "Problem Formulation: Recommending Trusted Financial Partners", "SPEAKER 1: Problem & Data")
+add_header(slide2, "Problem Formulation: Recommending Trusted Financial Partners", "SPEAKER 1: Problem & Data", slide_num=2)
 
-add_card(slide2, Inches(0.8), Inches(1.5), Inches(5.6), Inches(5.1))
-tx = slide2.shapes.add_textbox(Inches(1.0), Inches(1.7), Inches(5.2), Inches(4.7))
-tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "Decentralized OTC Trading Context"; p.font.size = Pt(16); p.font.bold = True; p.font.color.rgb = C_NAVY
-p = tf.add_paragraph()
-p.text = "• Pseudonymous Environment:\n" \
-         "  Bitcoin transactions are peer-to-peer, irreversible, and execute without centralized escrow intermediaries.\n\n" \
-         "• The Counterparty Risk Problem:\n" \
-         "  Dishonest actors can defraud unfamiliar partners with zero legal recourse. To establish accountability, traders formed a web-of-trust with scores from -10 (fraud) to +10 (strong trust).\n\n" \
-         "• The Core Recommendation Task:\n" \
-         "  Given historical trading history G_train, predict which unobserved trader pairs (u, v) are most likely to transact safely and recommend the Top-20 trustworthy partners for any user."
-p.font.size = Pt(12.5); p.font.color.rgb = C_TEXT
+c_w = Inches(5.72)
+c_h = Inches(5.45)
 
-add_card(slide2, Inches(6.8), Inches(1.5), Inches(5.7), Inches(5.1))
-tx = slide2.shapes.add_textbox(Inches(7.0), Inches(1.7), Inches(5.3), Inches(4.7))
+add_card(slide2, Inches(0.8), Inches(1.45), c_w, c_h, accent_top=C_NAVY)
+tx = slide2.shapes.add_textbox(Inches(1.05), Inches(1.65), c_w - Inches(0.5), c_h - Inches(0.4))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "Formal Graph Modeling Framework"; p.font.size = Pt(16); p.font.bold = True; p.font.color.rgb = C_TEAL
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+
+p = tf.paragraphs[0]; p.text = "Decentralized OTC Trading Context"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_NAVY
 p = tf.add_paragraph()
-p.text = "• Node Mapping V:\n" \
-         "  Each node v represents a distinct Bitcoin trader (9,207 real traders).\n\n" \
-         "• Edge Mapping E:\n" \
-         "  A directed rating from rater to ratee with weight in [-10, +10]. Averaged into an undirected tie denoting verified mutual trust.\n\n" \
+p.text = "• Pseudonymous Peer-to-Peer Transactions:\n" \
+         "  Bitcoin transfers are mathematically final and execute without banking intermediaries or centralized escrow clearinghouses.\n\n" \
+         "• The Counterparty Risk & Fraud Problem:\n" \
+         "  Dishonest market actors can abscond with fiat wire payments or crypto deposits with zero legal recourse. " \
+         "To establish accountability, traders formed self-governed reputation ledgers rating counterparties from -10 (scammer) to +10 (strong trust).\n\n" \
+         "• The Core Recommendation Dilemma:\n" \
+         "  Given historical trading transactions G_train, how can a market participant reliably discover and transact with unfamiliar counterparties without incurring fraud?\n\n" \
+         "• Graph Link Prediction Formulation:\n" \
+         "  We formalize partner recommendation as predicting unobserved positive trust ties in the network, ranking candidate partners by topological proximity."
+p.font.size = Pt(11); p.font.color.rgb = C_TEXT; p.space_before = Pt(6)
+
+add_card(slide2, Inches(6.8), Inches(1.45), c_w, c_h, accent_top=C_TEAL)
+tx = slide2.shapes.add_textbox(Inches(7.05), Inches(1.65), c_w - Inches(0.5), c_h - Inches(0.4))
+tf = tx.text_frame; tf.word_wrap = True
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+
+p = tf.paragraphs[0]; p.text = "Formal Graph Modeling Framework"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_TEAL_DARK
+p = tf.add_paragraph()
+p.text = "• Vertex Set V (Traders):\n" \
+         "  Each vertex v in V corresponds to a unique pseudonymous trader (9,207 verified market participants).\n\n" \
+         "• Edge Set E (Verified Trust Ties):\n" \
+         "  Directed counterparty ratings with scores in [-10, +10] aggregated into reciprocal undirected trust ties (w = (r_uv + r_vu)/2 > 0).\n\n" \
          "• Classification Formulation:\n" \
-         "  Binary classification on unobserved edge pairs: label y=1 indicates a verified future trust tie; label y=0 indicates a true non-edge.\n\n" \
-         "• Structural Balance Constraint:\n" \
-         "  Recommended ties must reinforce stable (+, +, +) triads, ensuring social cohesion and zero cognitive tension."
-p.font.size = Pt(12.5); p.font.color.rgb = C_TEXT
+         "  Binary classification task over unobserved node pairs (u, v): label y=1 indicates a verified future trust edge; label y=0 denotes a true non-edge.\n\n" \
+         "• Sociological Grounding (Heider Balance):\n" \
+         "  Recommended edges must complete balanced (+, +, +) triads with mutual partners, eliminating cognitive dissonance and counterparty conflict."
+p.font.size = Pt(11); p.font.color.rgb = C_TEXT; p.space_before = Pt(6)
 
 slide2.notes_slide.notes_text_frame.text = (
     "SPEAKER 1 TALKING POINTS:\n"
@@ -197,42 +363,53 @@ slide2.notes_slide.notes_text_frame.text = (
 # SLIDE 3: Speaker 1 - Empirical Datasets (Alpha + OTC)
 # =============================================================
 slide3 = prs.slides.add_slide(blank_layout)
-add_header(slide3, "Empirical Dataset Architecture: Bitcoin Alpha & Bitcoin OTC", "SPEAKER 1: Problem & Data")
+add_header(slide3, "Empirical Dataset Architecture: Bitcoin Alpha & Bitcoin OTC", "SPEAKER 1: Problem & Data", slide_num=3)
 
-c_w = Inches(3.64)
-add_card(slide3, Inches(0.8), Inches(1.5), c_w, Inches(1.3))
-tx = slide3.shapes.add_textbox(Inches(0.9), Inches(1.6), c_w - Inches(0.2), Inches(1.1))
-tx.text_frame.paragraphs[0].text = "Bitcoin Alpha"
-tx.text_frame.paragraphs[0].font.size = Pt(15); tx.text_frame.paragraphs[0].font.bold = True; tx.text_frame.paragraphs[0].font.color.rgb = C_NAVY
-p = tx.text_frame.add_paragraph(); p.text = "3,783 Traders • 24,186 Ratings\nCanonical Stanford SNAP trust network"
-p.font.size = Pt(11); p.font.color.rgb = C_MUTED
+stat_w = Inches(3.64)
+stat_h = Inches(1.50)
 
-add_card(slide3, Inches(4.84), Inches(1.5), c_w, Inches(1.3))
-tx = slide3.shapes.add_textbox(Inches(4.94), Inches(1.6), c_w - Inches(0.2), Inches(1.1))
-tx.text_frame.paragraphs[0].text = "Bitcoin OTC"
-tx.text_frame.paragraphs[0].font.size = Pt(15); tx.text_frame.paragraphs[0].font.bold = True; tx.text_frame.paragraphs[0].font.color.rgb = C_TEAL
-p = tx.text_frame.add_paragraph(); p.text = "5,887 Traders • 35,592 Ratings\nFreenode IRC sister trading platform"
-p.font.size = Pt(11); p.font.color.rgb = C_MUTED
-
-add_card(slide3, Inches(8.88), Inches(1.5), c_w, Inches(1.3))
-tx = slide3.shapes.add_textbox(Inches(8.98), Inches(1.6), c_w - Inches(0.2), Inches(1.1))
-tx.text_frame.paragraphs[0].text = "Unified Web-of-Trust"
-tx.text_frame.paragraphs[0].font.size = Pt(15); tx.text_frame.paragraphs[0].font.bold = True; tx.text_frame.paragraphs[0].font.color.rgb = C_GOLD
-p = tx.text_frame.add_paragraph(); p.text = "9,207 Traders • 31,050 Ties\n~60,000 raw source interactions"
-p.font.size = Pt(11); p.font.color.rgb = C_MUTED
-
-add_card(slide3, Inches(0.8), Inches(3.1), Inches(11.733), Inches(3.6))
-tx = slide3.shapes.add_textbox(Inches(1.1), Inches(3.3), Inches(11.2), Inches(3.2))
+# Card 1: Alpha
+add_card(slide3, Inches(0.8), Inches(1.45), stat_w, stat_h, accent_top=C_NAVY)
+tx = slide3.shapes.add_textbox(Inches(1.0), Inches(1.60), stat_w - Inches(0.4), stat_h - Inches(0.3))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "Data Ingestion, Cleaning & Reciprocal Aggregation Protocol"; p.font.size = Pt(16); p.font.bold = True; p.font.color.rgb = C_NAVY
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+p = tf.paragraphs[0]; p.text = "Bitcoin Alpha (SNAP)"; p.font.size = Pt(14); p.font.bold = True; p.font.color.rgb = C_NAVY
+p = tf.add_paragraph(); p.text = "3,783 Traders  •  24,186 Ratings\n14,081 Undirected Ties  •  2010–2016\nCanonical Stanford SNAP trust benchmark"; p.font.size = Pt(10.5); p.font.color.rgb = C_MUTED; p.space_before = Pt(3)
+
+# Card 2: OTC
+add_card(slide3, Inches(4.84), Inches(1.45), stat_w, stat_h, accent_top=C_TEAL)
+tx = slide3.shapes.add_textbox(Inches(5.04), Inches(1.60), stat_w - Inches(0.4), stat_h - Inches(0.3))
+tf = tx.text_frame; tf.word_wrap = True
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+p = tf.paragraphs[0]; p.text = "Bitcoin OTC (IRC SNAP)"; p.font.size = Pt(14); p.font.bold = True; p.font.color.rgb = C_TEAL_DARK
+p = tf.add_paragraph(); p.text = "5,887 Traders  •  35,592 Ratings\n17,012 Undirected Ties  •  Freenode IRC\nActive over-the-counter credit market"; p.font.size = Pt(10.5); p.font.color.rgb = C_MUTED; p.space_before = Pt(3)
+
+# Card 3: Unified
+add_card(slide3, Inches(8.88), Inches(1.45), stat_w, stat_h, accent_top=C_GOLD)
+tx = slide3.shapes.add_textbox(Inches(9.08), Inches(1.60), stat_w - Inches(0.4), stat_h - Inches(0.3))
+tf = tx.text_frame; tf.word_wrap = True
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+p = tf.paragraphs[0]; p.text = "Unified Web-of-Trust"; p.font.size = Pt(14); p.font.bold = True; p.font.color.rgb = C_GOLD
+p = tf.add_paragraph(); p.text = "9,207 Traders  •  31,050 Verified Ties\n~60,000 Raw Source Ratings\n42.4M candidate negative pairs"; p.font.size = Pt(10.5); p.font.color.rgb = C_MUTED; p.space_before = Pt(3)
+
+# Lower Detail Card
+add_card(slide3, Inches(0.8), Inches(3.20), Inches(11.733), Inches(3.70), accent_top=C_NAVY)
+tx = slide3.shapes.add_textbox(Inches(1.10), Inches(3.40), Inches(11.133), Inches(3.30))
+tf = tx.text_frame; tf.word_wrap = True
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+
+p = tf.paragraphs[0]; p.text = "Data Ingestion, Cleaning & Reciprocal Aggregation Protocol"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_NAVY
 p = tf.add_paragraph()
-p.text = "1. Integrity Verification:\n" \
-         "   All records were validated for numerical types, rating ranges (strictly between -10 and +10), absence of self-loops (u == v), and duplicate pair resolution.\n\n" \
-         "2. Reciprocal Rating Projection:\n" \
-         "   Standard link prediction operates on undirected graphs. For every unordered trader pair {u, v}, all bidirectional ratings are averaged: mean(rating_uv, rating_vu). Exact zeros are filtered out as neutral.\n\n" \
-         "3. Scale Expansion:\n" \
-         "   By merging Bitcoin Alpha and Bitcoin OTC, we expanded the graph by 4x in rating interactions, providing over 42.4 million candidate node pairs for negative sampling."
-p.font.size = Pt(13); p.font.color.rgb = C_TEXT
+p.text = "1. Strict Schema & Integrity Verification:\n" \
+         "   Every raw record was parsed for (source, target, rating, timestamp). Self-loops (trader rating themselves) were strictly removed. " \
+         "Ratings were validated to adhere to the discrete integer interval [-10, +10]. Missing and corrupted values were eliminated.\n\n" \
+         "2. Reciprocal Rating Projection (Directional to Undirected):\n" \
+         "   In social network analysis, link prediction algorithms require an undirected graph representation. For every unordered trader pair {u, v}, " \
+         "all bidirectional ratings were averaged: w = mean(rating_uv, rating_vu). Ties with positive consensus (w > 0) form the verified trust network.\n\n" \
+         "3. Network Merging & Scale Expansion:\n" \
+         "   By synthesizing both Bitcoin Alpha and OTC platforms, we expanded the network scale by nearly 4x compared to toy academic baselines, " \
+         "yielding an empirical graph of 9,207 nodes, 31,050 edges, and a rich triadic closure topology."
+p.font.size = Pt(11.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(6)
 
 slide3.notes_slide.notes_text_frame.text = (
     "SPEAKER 1 TALKING POINTS:\n"
@@ -243,29 +420,35 @@ slide3.notes_slide.notes_text_frame.text = (
 )
 
 # =============================================================
-# SLIDE 4: Speaker 1 - Scale-Free Invariants & Degree Distribution
+# SLIDE 4: Speaker 1 - Scale-Free Topology & Power Law
 # =============================================================
 slide4 = prs.slides.add_slide(blank_layout)
-add_header(slide4, "Exploratory Topology: Scale-Free Dynamics (γ ≈ 2.1) & Disassortativity (r = -0.14)", "SPEAKER 1: Problem & Data")
+add_header(slide4, "Exploratory Topology: Scale-Free Dynamics (γ ≈ 2.1) & Disassortativity (r = -0.14)", "SPEAKER 1: Problem & Data", slide_num=4)
 
-add_card(slide4, Inches(0.8), Inches(1.5), Inches(5.8), Inches(5.1))
-tx = slide4.shapes.add_textbox(Inches(1.0), Inches(1.7), Inches(5.4), Inches(4.7))
+add_card(slide4, Inches(0.8), Inches(1.45), Inches(5.72), Inches(5.45), accent_top=C_NAVY)
+tx = slide4.shapes.add_textbox(Inches(1.05), Inches(1.65), Inches(5.22), Inches(5.05))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "Heavy-Tailed Scale-Free Dynamics & Core Stratification"; p.font.size = Pt(14); p.font.bold = True; p.font.color.rgb = C_NAVY
-p = tf.add_paragraph()
-p.text = "• Power-Law Degree Verification:\n" \
-         "  The log-log degree plot exhibits a clear power-law distribution P(k) ~ k^(-γ) with exponent γ ≈ 2.1 across three orders of magnitude.\n\n" \
-         "• Negative Degree Assortativity (r = -0.1409):\n" \
-         "  Unlike social networks (r > 0), Bitcoin OTC is disassortative. Retail peripheral traders connect directly to central broker hubs.\n\n" \
-         "• K-Core Nucleus (k_max = 19):\n" \
-         "  Identifies a dense core backbone of 108 market-maker hubs with PageRank up to 0.014 and Betweenness up to 0.079.\n\n" \
-         "• Algorithmic Consequence:\n" \
-         "  Because hubs naturally attract new transaction volume, Preferential Attachment (degree product) acts as an extraordinary global link predictor (ROC-AUC = 0.9505)."
-p.font.size = Pt(11); p.font.color.rgb = C_TEXT
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
 
+p = tf.paragraphs[0]; p.text = "Scale-Free Invariants & Core Stratification"; p.font.size = Pt(14.5); p.font.bold = True; p.font.color.rgb = C_NAVY
+p = tf.add_paragraph()
+p.text = "• Heavy-Tailed Power-Law Degree Distribution:\n" \
+         "  The log-log degree plot confirms that the Bitcoin Web-of-Trust obeys a classic power law P(k) ~ k^(-γ) with exponent γ ≈ 2.1 across three orders of magnitude.\n\n" \
+         "• Negative Degree Assortativity (r = -0.1409):\n" \
+         "  Unlike standard social networks where popular individuals connect to other popular individuals (r > 0), the OTC trading network is disassortative. Peripheral retail traders connect directly to central broker hubs.\n\n" \
+         "• 19-Core Shell Decomposition (k_max = 19):\n" \
+         "  K-core analysis reveals a resilient 19-core backbone of 108 market-making brokers (e.g. Trader #1, PageRank up to 0.014, Betweenness up to 0.079).\n\n" \
+         "• Algorithmic Consequence:\n" \
+         "  Because transaction volume naturally flows through liquidity hubs, Preferential Attachment (degree product) acts as an extraordinary global link predictor."
+p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
+
+# Container card for degree distribution plot
 power_img = ROOT / "visualizations" / "degree_distribution_powerlaw.png"
 if power_img.exists():
-    slide4.shapes.add_picture(str(power_img), Inches(6.8), Inches(1.5), Inches(5.7), Inches(5.1))
+    add_image_card(slide4, power_img, Inches(6.8), Inches(1.45), Inches(5.72), Inches(5.45),
+                   "Heavy-Tailed Scale-Free Degree Distribution",
+                   "Verified Power-Law Fit: γ ≈ 2.1 across 3 orders of magnitude",
+                   accent_color=C_TEAL)
 
 slide4.notes_slide.notes_text_frame.text = (
     "SPEAKER 1 TALKING POINTS:\n"
@@ -277,37 +460,46 @@ slide4.notes_slide.notes_text_frame.text = (
 )
 
 # =============================================================
-# SLIDE 5: Speaker 1 - Enterprise Synthetic & 80/20 Split
+# SLIDE 5: Speaker 1 - Enterprise Synthetic & 80/20 MST Split
 # =============================================================
 slide5 = prs.slides.add_slide(blank_layout)
-add_header(slide5, "Enterprise Scaling (25,000 Nodes) & 80/20 MST Negative Sampling", "SPEAKER 1: Problem & Data")
+add_header(slide5, "Enterprise Scaling (25,000 Nodes) & 80/20 MST Negative Sampling", "SPEAKER 1: Problem & Data", slide_num=5)
 
-add_card(slide5, Inches(0.8), Inches(1.5), Inches(5.6), Inches(5.1))
-tx = slide5.shapes.add_textbox(Inches(1.0), Inches(1.7), Inches(5.2), Inches(4.7))
+add_card(slide5, Inches(0.8), Inches(1.45), Inches(5.72), Inches(5.45), accent_top=C_NAVY)
+tx = slide5.shapes.add_textbox(Inches(1.05), Inches(1.65), Inches(5.22), Inches(5.05))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "Enterprise Synthetic Benchmark (25k Nodes)"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_NAVY
-p = tf.add_paragraph()
-p.text = "• Scale Requirement:\n" \
-         "  To prove enterprise production viability, we scaled beyond empirical data using a calibrated Holme-Kim power-law clustering model.\n\n" \
-         "• Dimensions:\n" \
-         "  25,000 trader nodes and 135,857 trust edges.\n\n" \
-         "• Preserved Topological Invariants:\n" \
-         "  - Power-Law Degree Exponent: gamma ≈ 2.1 (replicates presence of major broker hubs).\n" \
-         "  - High Triadic Clustering: p_triangle = 0.18 (replicates close-knit trading rings)."
-p.font.size = Pt(12.5); p.font.color.rgb = C_TEXT
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
 
-add_card(slide5, Inches(6.8), Inches(1.5), Inches(5.7), Inches(5.1))
-tx = slide5.shapes.add_textbox(Inches(7.0), Inches(1.7), Inches(5.3), Inches(4.7))
-tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "80/20 Split with Spanning Tree Protection"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_TEAL
+p = tf.paragraphs[0]; p.text = "Enterprise Synthetic Benchmark (25k Nodes)"; p.font.size = Pt(14.5); p.font.bold = True; p.font.color.rgb = C_NAVY
 p = tf.add_paragraph()
-p.text = "• The Fragmentation Pitfall:\n" \
-         "  Random edge removal disconnects graphs into isolated nodes, breaking path-based heuristics.\n\n" \
+p.text = "• Scaling Beyond Small Academic Baselines:\n" \
+         "  To demonstrate enterprise production readiness, we scaled beyond empirical data using a calibrated Holme-Kim power-law clustering model.\n\n" \
+         "• Dimensions & Topology:\n" \
+         "  - Total Nodes: 25,000 traders\n" \
+         "  - Total Edges: 135,857 trust edges\n" \
+         "  - Average Degree: 10.87 ties per trader\n\n" \
+         "• Calibrated Topological Invariants:\n" \
+         "  - Power-Law Degree Exponent: γ ≈ 2.1 (replicates broker liquidity hubs).\n" \
+         "  - High Triadic Clustering: C = 0.181 (replicates close-knit trading rings).\n" \
+         "  - Modular Community Structure: Q = 0.594 (replicates localized exchange clusters)."
+p.font.size = Pt(11); p.font.color.rgb = C_TEXT; p.space_before = Pt(6)
+
+add_card(slide5, Inches(6.8), Inches(1.45), Inches(5.72), Inches(5.45), accent_top=C_TEAL)
+tx = slide5.shapes.add_textbox(Inches(7.05), Inches(1.65), Inches(5.22), Inches(5.05))
+tf = tx.text_frame; tf.word_wrap = True
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+
+p = tf.paragraphs[0]; p.text = "80/20 Split with MST Connectivity Protection"; p.font.size = Pt(14.5); p.font.bold = True; p.font.color.rgb = C_TEAL_DARK
+p = tf.add_paragraph()
+p.text = "• The Graph Fragmentation Trap:\n" \
+         "  Standard random 80/20 train/test splitting disconnects peripheral nodes into isolated subgraphs, producing artificial false zeroes for 2-hop heuristics.\n\n" \
          "• Minimum Spanning Tree (MST) Guarantee:\n" \
-         "  We compute an MST of G. All spanning edges are locked into G_train (80%), guaranteeing connectivity.\n\n" \
-         "• Negative Sampling (Balanced 50/50 Evaluation):\n" \
-         "  We sample 3,647 held-out positive ties and an equal 3,647 unobserved non-edges at distance >= 2, establishing a fair 50% baseline."
-p.font.size = Pt(12.5); p.font.color.rgb = C_TEXT
+         "  We compute an MST T = (V, E_MST). All spanning tree edges are locked into G_train (80%), guaranteeing that G_train has exactly 1 connected component.\n\n" \
+         "• Held-Out Positive Ties (E_test+):\n" \
+         "  3,647 chordal edges (20%) sampled strictly from E \\ E_MST.\n\n" \
+         "• Balanced Negative Sampling (E_test-):\n" \
+         "  3,647 unobserved non-edges with geodesic distance d(u, v) >= 2, establishing a balanced 50/50 test distribution (random guess AUC = 0.5000)."
+p.font.size = Pt(11); p.font.color.rgb = C_TEXT; p.space_before = Pt(6)
 
 slide5.notes_slide.notes_text_frame.text = (
     "SPEAKER 1 TALKING POINTS:\n"
@@ -322,22 +514,53 @@ slide5.notes_slide.notes_text_frame.text = (
 # SLIDE 6: Speaker 2 - Algorithmic Framework Overview
 # =============================================================
 slide6 = prs.slides.add_slide(blank_layout)
-add_header(slide6, "Topological Link Prediction: The Mathematical Framework", "SPEAKER 2: Algorithms & Theory")
+add_header(slide6, "Topological Link Prediction: The Mathematical Framework", "SPEAKER 2: Algorithms & Theory", slide_num=6)
 
-add_card(slide6, Inches(0.8), Inches(1.5), Inches(11.733), Inches(5.1))
-tx = slide6.shapes.add_textbox(Inches(1.1), Inches(1.7), Inches(11.2), Inches(4.7))
+# Top Philosophy Card
+add_card(slide6, Inches(0.8), Inches(1.45), Inches(11.733), Inches(2.20), accent_top=C_NAVY)
+tx = slide6.shapes.add_textbox(Inches(1.10), Inches(1.65), Inches(11.133), Inches(1.85))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "The Philosophy of Topological Heuristics"; p.font.size = Pt(17); p.font.bold = True; p.font.color.rgb = C_NAVY
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+
+p = tf.paragraphs[0]; p.text = "The Triadic Closure Principle in Financial Trust Networks"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_NAVY
 p = tf.add_paragraph()
-p.text = "In social and financial networks, the likelihood of two nodes forming a connection is strongly governed by their graph proximity.\n\n" \
-         "• The Triadic Closure Principle:\n" \
-         "  If Trader A trusts Trader C, and Trader B trusts Trader C, there exists a latent social and economic incentive for Trader A and Trader B to establish a direct trust tie.\n\n" \
-         "• Local vs. Global Similarity:\n" \
-         "  - Local Neighborhood Heuristics (Common Neighbors, Jaccard, Adamic-Adar, Resource Allocation) measure shared local community overlap.\n" \
-         "  - Global / Degree-Based Heuristics (Preferential Attachment) capture the 'rich-get-richer' phenomenon of market-maker hubs.\n\n" \
-         "• Model Pipeline:\n" \
-         "  We implemented and benchmarked all five standard SNA heuristics and engineered a normalized Rank Ensemble Model to combine the strengths of both local clustering and hub attraction."
-p.font.size = Pt(13); p.font.color.rgb = C_TEXT
+p.text = "In social network analysis (Liben-Nowell & Kleinberg, 2007), edge formation is heavily driven by graph proximity. " \
+         "In financial markets, triadic closure is reinforced by mutual reputation: if Trader A trusts Trader C, and Trader B trusts Trader C, " \
+         "Trader C acts as an informal mutual guarantor. Both traders can independently verify creditworthiness, creating a strong economic incentive to establish direct ties.\n\n" \
+         "Our framework evaluates two competing topological paradigms: Local Neighborhood Overlap (measuring shared community) vs. Global Hub Attraction (measuring broker liquidity)."
+p.font.size = Pt(11); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
+
+# 2 Bottom Cards
+c2_w = Inches(5.72)
+c2_h = Inches(3.05)
+c2_y = Inches(3.85)
+
+add_card(slide6, Inches(0.8), c2_y, c2_w, c2_h, accent_top=C_TEAL)
+tx = slide6.shapes.add_textbox(Inches(1.05), c2_y + Inches(0.18), c2_w - Inches(0.5), c2_h - Inches(0.35))
+tf = tx.text_frame; tf.word_wrap = True
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+p = tf.paragraphs[0]; p.text = "Local Neighborhood Heuristics"; p.font.size = Pt(14); p.font.bold = True; p.font.color.rgb = C_TEAL_DARK
+p = tf.add_paragraph()
+p.text = "• Common Neighbors (CN): Exact count of shared peers |Γ(u) ∩ Γ(v)|.\n" \
+         "• Jaccard Coefficient: Normalized overlap |Γ(u) ∩ Γ(v)| / |Γ(u) ∪ Γ(v)|.\n" \
+         "• Adamic-Adar (AA): Logarithmic inverse degree penalty Σ [1 / log(|Γ(z)|)].\n" \
+         "• Resource Allocation (RA): Linear inverse degree penalty Σ [1 / |Γ(z)|].\n" \
+         "Strengths: Outstanding precision at top ranks (100% P@20); identifies exclusive, high-trust community introductions."
+p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
+
+add_card(slide6, Inches(6.8), c2_y, c2_w, c2_h, accent_top=C_PURPLE)
+tx = slide6.shapes.add_textbox(Inches(7.05), c2_y + Inches(0.18), c2_w - Inches(0.5), c2_h - Inches(0.35))
+tf = tx.text_frame; tf.word_wrap = True
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+p = tf.paragraphs[0]; p.text = "Global & Hybrid Ensemble Models"; p.font.size = Pt(14); p.font.bold = True; p.font.color.rgb = C_PURPLE
+p = tf.add_paragraph()
+p.text = "• Preferential Attachment (PA): Degree product |Γ(u)| · |Γ(v)|.\n" \
+         "  Models Barabási-Albert liquidity growth; dominant 0.9505 ROC-AUC.\n\n" \
+         "• Normalized Rank Ensemble (Borda Count):\n" \
+         "  Combines min-max normalized scores across all five heuristics:\n" \
+         "  Score_Ens = 0.30 AA + 0.25 RA + 0.25 Jaccard + 0.10 CN + 0.10 PA.\n" \
+         "Strengths: Delivers the highest balanced F1-score (0.8903) and 0.9387 AUC."
+p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
 
 slide6.notes_slide.notes_text_frame.text = (
     "SPEAKER 2 TALKING POINTS:\n"
@@ -351,37 +574,43 @@ slide6.notes_slide.notes_text_frame.text = (
 # SLIDE 7: Speaker 2 - CN & Jaccard
 # =============================================================
 slide7 = prs.slides.add_slide(blank_layout)
-add_header(slide7, "Heuristic Models 1 & 2: Common Neighbors & Jaccard Coefficient", "SPEAKER 2: Algorithms & Theory")
+add_header(slide7, "Heuristic Models 1 & 2: Common Neighbors & Jaccard Coefficient", "SPEAKER 2: Algorithms & Theory", slide_num=7)
 
-add_card(slide7, Inches(0.8), Inches(1.5), Inches(5.6), Inches(5.1))
-tx = slide7.shapes.add_textbox(Inches(1.0), Inches(1.7), Inches(5.2), Inches(4.7))
+add_card(slide7, Inches(0.8), Inches(1.45), Inches(5.72), Inches(5.45), accent_top=C_TEAL)
+tx = slide7.shapes.add_textbox(Inches(1.05), Inches(1.65), Inches(5.22), Inches(5.05))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "1. Common Neighbors (CN)"; p.font.size = Pt(16); p.font.bold = True; p.font.color.rgb = C_TEAL
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+
+p = tf.paragraphs[0]; p.text = "1. Common Neighbors (CN)"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_TEAL_DARK
 p = tf.add_paragraph()
 p.text = "Mathematical Formulation:\n" \
          "Score_CN(u, v) = |Γ(u) ∩ Γ(v)|\n\n" \
          "• Theoretical Rationale:\n" \
-         "  Directly counts the number of mutual verified peers shared between trader u and trader v.\n\n" \
-         "• Real-World Analogy:\n" \
-         "  'Mutual Friends on Social Media'. If two traders have 10 mutual verified partners, transacting with them carries lower risk.\n\n" \
-         "• Key Result:\n" \
-         "  100% Precision@20 on empirical Bitcoin data."
-p.font.size = Pt(12.5); p.font.color.rgb = C_TEXT
+         "  Directly counts the number of mutual verified peers shared between trader u and trader v in the observed training graph.\n\n" \
+         "• Real-World Financial Analogy:\n" \
+         "  'Mutual Friends / Co-Endorsements'. If two traders share 15 mutual reputable partners, transacting carries low counterparty default risk.\n\n" \
+         "• Computational Complexity:\n" \
+         "  O(deg(u) + deg(v)) using hash set intersection.\n\n" \
+         "• Empirical Finding:\n" \
+         "  Flawless 100% Precision@20 on empirical Bitcoin data. Highly reliable for local community recommendations."
+p.font.size = Pt(11); p.font.color.rgb = C_TEXT; p.space_before = Pt(6)
 
-add_card(slide7, Inches(6.8), Inches(1.5), Inches(5.7), Inches(5.1))
-tx = slide7.shapes.add_textbox(Inches(7.0), Inches(1.7), Inches(5.3), Inches(4.7))
+add_card(slide7, Inches(6.8), Inches(1.45), Inches(5.72), Inches(5.45), accent_top=C_NAVY)
+tx = slide7.shapes.add_textbox(Inches(7.05), Inches(1.65), Inches(5.22), Inches(5.05))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "2. Jaccard Coefficient"; p.font.size = Pt(16); p.font.bold = True; p.font.color.rgb = C_NAVY
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+
+p = tf.paragraphs[0]; p.text = "2. Jaccard Coefficient"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_NAVY
 p = tf.add_paragraph()
 p.text = "Mathematical Formulation:\n" \
          "Score_Jaccard(u, v) = |Γ(u) ∩ Γ(v)| / |Γ(u) ∪ Γ(v)|\n\n" \
          "• Theoretical Rationale:\n" \
-         "  Normalizes Common Neighbors by the union size of their respective neighborhoods.\n\n" \
-         "• Real-World Analogy:\n" \
-         "  'Neighborhood Overlap Percentage'. Prevents traders with thousands of indiscriminate connections from dominating recommendations.\n\n" \
-         "• Trade-off:\n" \
-         "  Penalizes pairs where one trader is a large broker, leading to lower Precision@K in scale-free financial topologies."
-p.font.size = Pt(12.5); p.font.color.rgb = C_TEXT
+         "  Normalizes common neighbors by the total union size of their combined neighborhoods, measuring relative community overlap.\n\n" \
+         "• Real-World Financial Analogy:\n" \
+         "  'Exclusive Overlap Ratio'. Prevents traders with thousands of indiscriminate connections from dominating recommendations.\n\n" \
+         "• The Scale-Free Trade-Off:\n" \
+         "  In disassortative networks (r = -0.14), large brokers have enormous unions (|Γ(u) ∪ Γ(v)| > 500). This penalizes genuine broker connections, leading to lower Precision@K (15% P@20)."
+p.font.size = Pt(11); p.font.color.rgb = C_TEXT; p.space_before = Pt(6)
 
 slide7.notes_slide.notes_text_frame.text = (
     "SPEAKER 2 TALKING POINTS:\n"
@@ -395,46 +624,64 @@ slide7.notes_slide.notes_text_frame.text = (
 # SLIDE 8: Speaker 2 - Adamic-Adar, RA & Preferential Attachment
 # =============================================================
 slide8 = prs.slides.add_slide(blank_layout)
-add_header(slide8, "Heuristics 3, 4 & 5: Adamic-Adar, Resource Allocation & PA", "SPEAKER 2: Algorithms & Theory")
+add_header(slide8, "Heuristics 3, 4 & 5: Adamic-Adar, Resource Allocation & PA", "SPEAKER 2: Algorithms & Theory", slide_num=8)
 
-add_card(slide8, Inches(0.8), Inches(1.5), Inches(3.64), Inches(5.1))
-tx = slide8.shapes.add_textbox(Inches(1.0), Inches(1.7), Inches(3.24), Inches(4.7))
+c3_w = Inches(3.64)
+c3_h = Inches(5.45)
+
+# Card 1: AA
+add_card(slide8, Inches(0.8), Inches(1.45), c3_w, c3_h, accent_top=C_GOLD)
+tx = slide8.shapes.add_textbox(Inches(1.0), Inches(1.65), c3_w - Inches(0.4), c3_h - Inches(0.4))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "3. Adamic-Adar (AA)"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_GOLD
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+p = tf.paragraphs[0]; p.text = "3. Adamic-Adar (AA)"; p.font.size = Pt(14); p.font.bold = True; p.font.color.rgb = C_GOLD
 p = tf.add_paragraph()
-p.text = "Score_AA(u, v) =\nΣ [ 1 / log(|Γ(z)|) ]\n\n" \
-         "• Log Penalty:\n" \
+p.text = "Score_AA(u, v) =\nΣ [ 1 / log(|Γ(z)|) ]\nfor z in Γ(u) ∩ Γ(v)\n\n" \
+         "• Logarithmic Penalty:\n" \
          "  Weighs rare, low-degree mutual contacts higher than celebrity hubs.\n\n" \
          "• Intuition:\n" \
-         "  Sharing an exclusive mutual contact who only knows 3 traders is a much stronger trust signal.\n\n" \
-         "• Result: 100% P@20."
-p.font.size = Pt(11.5); p.font.color.rgb = C_TEXT
+         "  Sharing an exclusive mutual peer who only knows 3 traders is a far stronger trust signal than sharing a broker who knows 1,000.\n\n" \
+         "• Benchmark Results:\n" \
+         "  100% Precision@10 & @20\n" \
+         "  95% Precision@100\n" \
+         "  0.8366 ROC-AUC."
+p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
 
-add_card(slide8, Inches(4.84), Inches(1.5), Inches(3.64), Inches(5.1))
-tx = slide8.shapes.add_textbox(Inches(5.04), Inches(1.7), Inches(3.24), Inches(4.7))
+# Card 2: RA
+add_card(slide8, Inches(4.84), Inches(1.45), c3_w, c3_h, accent_top=C_TEAL)
+tx = slide8.shapes.add_textbox(Inches(5.04), Inches(1.65), c3_w - Inches(0.4), c3_h - Inches(0.4))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "4. Resource Allocation"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_TEAL
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+p = tf.paragraphs[0]; p.text = "4. Resource Allocation"; p.font.size = Pt(14); p.font.bold = True; p.font.color.rgb = C_TEAL_DARK
 p = tf.add_paragraph()
-p.text = "Score_RA(u, v) =\nΣ [ 1 / |Γ(z)| ]\n\n" \
+p.text = "Score_RA(u, v) =\nΣ [ 1 / |Γ(z)| ]\nfor z in Γ(u) ∩ Γ(v)\n\n" \
          "• Linear Penalty:\n" \
          "  Penalizes high-degree shared nodes even more aggressively than AA.\n\n" \
          "• Intuition:\n" \
-         "  Models resource flow across mutual nodes. Heavy suppression of broker noise.\n\n" \
-         "• Result: 100% P@20, 96% P@100."
-p.font.size = Pt(11.5); p.font.color.rgb = C_TEXT
+         "  Models physical resource transmission across a 2-hop random walk. Heavy suppression of broker hub noise.\n\n" \
+         "• Benchmark Results:\n" \
+         "  100% Precision@10 & @20\n" \
+         "  96% Precision@100\n" \
+         "  0.8366 ROC-AUC."
+p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
 
-add_card(slide8, Inches(8.88), Inches(1.5), Inches(3.64), Inches(5.1))
-tx = slide8.shapes.add_textbox(Inches(9.08), Inches(1.7), Inches(3.24), Inches(4.7))
+# Card 3: PA
+add_card(slide8, Inches(8.88), Inches(1.45), c3_w, c3_h, accent_top=C_CORAL)
+tx = slide8.shapes.add_textbox(Inches(9.08), Inches(1.65), c3_w - Inches(0.4), c3_h - Inches(0.4))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "5. Preferential Attachment"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_CORAL
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+p = tf.paragraphs[0]; p.text = "5. Preferential Attachment"; p.font.size = Pt(14); p.font.bold = True; p.font.color.rgb = C_CORAL
 p = tf.add_paragraph()
 p.text = "Score_PA(u, v) =\n|Γ(u)| · |Γ(v)|\n\n" \
          "• Degree Product:\n" \
          "  Models Barabási-Albert rich-get-richer growth.\n\n" \
          "• Intuition:\n" \
-         "  In OTC markets, established brokers naturally attract incoming transaction volume.\n\n" \
-         "• Result: Dominant 0.9505 ROC-AUC."
-p.font.size = Pt(11.5); p.font.color.rgb = C_TEXT
+         "  In financial OTC markets, reputable market makers and liquidity hubs naturally attract high transaction volume.\n\n" \
+         "• Benchmark Results:\n" \
+         "  Dominant 0.9505 ROC-AUC\n" \
+         "  0.9522 Average Precision\n" \
+         "  100% Precision across all K."
+p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
 
 slide8.notes_slide.notes_text_frame.text = (
     "SPEAKER 2 TALKING POINTS:\n"
@@ -449,23 +696,26 @@ slide8.notes_slide.notes_text_frame.text = (
 # SLIDE 9: Speaker 2 - Ensemble Model
 # =============================================================
 slide9 = prs.slides.add_slide(blank_layout)
-add_header(slide9, "The Normalized Rank Ensemble Model", "SPEAKER 2: Algorithms & Theory")
+add_header(slide9, "The Normalized Rank Ensemble Model", "SPEAKER 2: Algorithms & Theory", slide_num=9)
 
-add_card(slide9, Inches(0.8), Inches(1.5), Inches(11.733), Inches(5.1))
-tx = slide9.shapes.add_textbox(Inches(1.1), Inches(1.7), Inches(11.2), Inches(4.7))
+add_card(slide9, Inches(0.8), Inches(1.45), Inches(11.733), Inches(5.45), accent_top=C_PURPLE)
+tx = slide9.shapes.add_textbox(Inches(1.10), Inches(1.65), Inches(11.133), Inches(5.05))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "Engineering the Hybrid Link Prediction Pipeline"; p.font.size = Pt(16); p.font.bold = True; p.font.color.rgb = C_PURPLE
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+
+p = tf.paragraphs[0]; p.text = "Engineering the Multi-Scale Hybrid Prediction Pipeline"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_NAVY
 p = tf.add_paragraph()
-p.text = "Why an Ensemble Model?\n" \
-         "• PA excels globally (finding high-probability hubs) but lacks fine-grained community specificity.\n" \
-         "• Adamic-Adar and CN excel locally (finding tight-knit trading partners) but fail on isolated nodes.\n\n" \
-         "Ensemble Formulation (Borda Rank Sum):\n" \
-         "Score_Ensemble(u, v) = 0.30 · Norm(AA) + 0.25 · Norm(RA) + 0.25 · Norm(Jaccard) + 0.10 · Norm(CN) + 0.10 · Norm(PA)\n\n" \
-         "Where Norm(S) = (S - S_min) / (S_max - S_min) maps each heuristic to the interval [0, 1].\n\n" \
-         "Scientific Benefit:\n" \
-         "The Ensemble model achieves the highest balanced F1-Score (0.8903) and 0.9387 ROC-AUC while maintaining 95% to 100% Precision@20.\n" \
-         "Now, Speaker 3 will present our benchmark validation results and live recommendation demonstration."
-p.font.size = Pt(13); p.font.color.rgb = C_TEXT
+p.text = "• The Theoretical Motivation for an Ensemble:\n" \
+         "  - Preferential Attachment excels globally at identifying high-probability liquidity hubs, but lacks fine-grained community specificity.\n" \
+         "  - Adamic-Adar and Common Neighbors excel locally at finding tight-knit trading partners, but cannot score nodes at geodesic distances > 2.\n\n" \
+         "• Mathematical Formulation (Min-Max Normalized Rank Fusion):\n" \
+         "  Score_Ensemble(u, v) = 0.30 · Norm(AA) + 0.25 · Norm(RA) + 0.25 · Norm(Jaccard) + 0.10 · Norm(CN) + 0.10 · Norm(PA)\n\n" \
+         "  where Norm(S) = (S - S_min) / (S_max - S_min) scales raw heuristic scores into a calibrated, comparable [0, 1] range.\n\n" \
+         "• Empirical Superiority:\n" \
+         "  The Ensemble model achieves the highest balanced F1-Score (0.8903) and 0.9387 ROC-AUC while preserving 95%–100% Precision@20.\n\n" \
+         "• Smooth Handover:\n" \
+         "  Now, Speaker 3 will present our empirical benchmark validation scoreboard, Precision@K analysis, and live recommendation demonstration."
+p.font.size = Pt(11.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(6)
 
 slide9.notes_slide.notes_text_frame.text = (
     "SPEAKER 2 TALKING POINTS:\n"
@@ -476,31 +726,39 @@ slide9.notes_slide.notes_text_frame.text = (
 )
 
 # =============================================================
-# SLIDE 10: Speaker 3 - Benchmark Scoreboard & ROC/PR Curves
+# SLIDE 10: Speaker 3 - Benchmark Scoreboard & ROC Curves
 # =============================================================
 slide10 = prs.slides.add_slide(blank_layout)
-add_header(slide10, "Empirical Validation Results & ROC/PR Curve Analysis", "SPEAKER 3: Validation & Viva")
+add_header(slide10, "Empirical Validation Results & ROC/PR Curve Analysis", "SPEAKER 3: Validation & Viva", slide_num=10)
 
-add_card(slide10, Inches(0.8), Inches(1.5), Inches(5.6), Inches(5.1))
-tx = slide10.shapes.add_textbox(Inches(1.0), Inches(1.7), Inches(5.2), Inches(4.7))
+add_card(slide10, Inches(0.8), Inches(1.45), Inches(5.72), Inches(5.45), accent_top=C_NAVY)
+tx = slide10.shapes.add_textbox(Inches(1.05), Inches(1.65), Inches(5.22), Inches(5.05))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "Held-Out Test Scoreboard (3,647 Pairs)"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_NAVY
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+
+p = tf.paragraphs[0]; p.text = "Held-Out Test Scoreboard (7,294 Pairs)"; p.font.size = Pt(14.5); p.font.bold = True; p.font.color.rgb = C_NAVY
 p = tf.add_paragraph()
 p.text = "• Preferential Attachment (PA):\n" \
-         "  ROC-AUC: 0.9505  |  F1: 0.8864  |  P@20: 100.0%\n\n" \
-         "• Ensemble Model (Borda Rank Sum):\n" \
-         "  ROC-AUC: 0.9387  |  F1: 0.8903  |  P@20: 95.0%\n\n" \
-         "• Representation Learning Baseline (SVD + LogReg):\n" \
-         "  ROC-AUC: 0.9175  |  AP: 0.9377  |  P@20: 100.0%\n\n" \
-         "• Adamic-Adar (AA) & Common Neighbors (CN):\n" \
-         "  ROC-AUC: ~0.836  |  F1: 0.6667  |  P@20: 100.0%\n\n" \
-         "• Chronological Temporal Backtest (2010–2016):\n" \
-         "  PA: 0.8285  |  Ensemble: 0.8150  |  100% P@20 (Zero Lookahead)!"
-p.font.size = Pt(10); p.font.color.rgb = C_TEXT
+         "  ROC-AUC: 0.9505  |  F1: 0.8864  |  Avg Prec: 0.9522  |  P@20: 100%\n\n" \
+         "• Ensemble Model (Rank Sum):\n" \
+         "  ROC-AUC: 0.9387  |  F1: 0.8903 (Highest!)  |  Avg Prec: 0.9118  |  P@20: 95%\n\n" \
+         "• SVD Spectral Baseline (d=64 + LogReg):\n" \
+         "  ROC-AUC: 0.9175  |  F1: 0.4522  |  Avg Prec: 0.9377  |  P@20: 100%\n" \
+         "  Topological models double the F1-score with full explainability!\n\n" \
+         "• Adamic-Adar (AA) & Resource Allocation (RA):\n" \
+         "  ROC-AUC: 0.8366  |  F1: 0.6667  |  P@20: 100.0%  |  P@100: 96%\n\n" \
+         "• Common Neighbors (CN):\n" \
+         "  ROC-AUC: 0.8335  |  F1: 0.6667  |  P@20: 100.0%  |  P@100: 95%\n\n" \
+         "• Chronological Temporal Backtest (2010–2016, Zero Lookahead):\n" \
+         "  PA: 0.8285 AUC  |  Ensemble: 0.8150 AUC  |  100% Precision@20"
+p.font.size = Pt(10); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
 
 roc_img = ROOT / "visualizations" / "link_prediction_roc_curves.png"
 if roc_img.exists():
-    slide10.shapes.add_picture(str(roc_img), Inches(6.8), Inches(1.5), Inches(5.7), Inches(5.1))
+    add_image_card(slide10, roc_img, Inches(6.8), Inches(1.45), Inches(5.72), Inches(5.45),
+                   "Receiver Operating Characteristic (ROC) Benchmark",
+                   "Preferential Attachment (0.9505) and Ensemble (0.9387) Lead the Field",
+                   accent_color=C_GOLD)
 
 slide10.notes_slide.notes_text_frame.text = (
     "SPEAKER 3 TALKING POINTS:\n"
@@ -514,25 +772,34 @@ slide10.notes_slide.notes_text_frame.text = (
 # SLIDE 11: Speaker 3 - Precision@K & Enterprise Scaling
 # =============================================================
 slide11 = prs.slides.add_slide(blank_layout)
-add_header(slide11, "Precision@K & Enterprise Scalability (25,000 Nodes)", "SPEAKER 3: Validation & Viva")
+add_header(slide11, "Precision@K & Enterprise Scalability (25,000 Nodes)", "SPEAKER 3: Validation & Viva", slide_num=11)
 
-add_card(slide11, Inches(0.8), Inches(1.5), Inches(5.6), Inches(5.1))
-tx = slide11.shapes.add_textbox(Inches(1.0), Inches(1.7), Inches(5.2), Inches(4.7))
+add_card(slide11, Inches(0.8), Inches(1.45), Inches(5.72), Inches(5.45), accent_top=C_NAVY)
+tx = slide11.shapes.add_textbox(Inches(1.05), Inches(1.65), Inches(5.22), Inches(5.05))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "Enterprise Scalability Findings"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_NAVY
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+
+p = tf.paragraphs[0]; p.text = "Operational Precision@K & Enterprise Scaling"; p.font.size = Pt(14.5); p.font.bold = True; p.font.color.rgb = C_NAVY
 p = tf.add_paragraph()
-p.text = "To ensure our conclusions hold on large-scale enterprise deployments, we benchmarked the pipeline on our 25,000-node synthetic network (135,857 edges):\n\n" \
-         "• Ensemble ROC-AUC: 0.7539  |  F1: 0.6907\n" \
-         "• Precision@10: 100.0% across all models\n" \
-         "• Precision@20: 100.0% across all models\n" \
-         "• Precision@50: 100.0% for CN, AA, RA, PA, Ensemble\n\n" \
-         "Takeaway:\n" \
-         "Even when the node count is scaled up by nearly 3x and edge count by 4x, top recommendations maintain near-flawless accuracy."
-p.font.size = Pt(12); p.font.color.rgb = C_TEXT
+p.text = "• Why Precision@K is the Decisive Industry Metric:\n" \
+         "  In commercial trading platforms, users do not inspect thousands of potential links; they act only on the Top-10 or Top-20 recommended partners.\n\n" \
+         "• Empirical Precision Results (Alpha + OTC):\n" \
+         "  - Precision@10: 100% for CN, AA, RA, PA, Ensemble, SVD\n" \
+         "  - Precision@20: 100% for CN, AA, RA, PA, SVD; 95% for Ensemble\n" \
+         "  - Precision@50: 100% for CN, AA, RA, PA\n\n" \
+         "• Enterprise 25,000-Node Validation (135,857 Ties):\n" \
+         "  - Ensemble ROC-AUC: 0.7539  |  F1: 0.6907\n" \
+         "  - Precision@10 & Precision@20: 100.0% across all models\n\n" \
+         "• Core Takeaway:\n" \
+         "  Even when network size scales by nearly 3x and edge count by 4x, top-ranked recommendations preserve near-flawless accuracy."
+p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
 
 prec_img = ROOT / "visualizations" / "link_prediction_precision_at_k.png"
 if prec_img.exists():
-    slide11.shapes.add_picture(str(prec_img), Inches(6.8), Inches(1.5), Inches(5.7), Inches(5.1))
+    add_image_card(slide11, prec_img, Inches(6.8), Inches(1.45), Inches(5.72), Inches(5.45),
+                   "Precision@K Comparison Across Models (K in {10, 20, 50, 100})",
+                   "Flawless 100% Precision@10 and @20 Across Standalone Heuristics",
+                   accent_color=C_TEAL)
 
 slide11.notes_slide.notes_text_frame.text = (
     "SPEAKER 3 TALKING POINTS:\n"
@@ -546,28 +813,34 @@ slide11.notes_slide.notes_text_frame.text = (
 # SLIDE 12: Speaker 3 - Top-20 Recommendation & Structural Balance
 # =============================================================
 slide12 = prs.slides.add_slide(blank_layout)
-add_header(slide12, "Top-20 Recommendation Engine, Consensus & Structural Balance", "SPEAKER 3: Validation & Viva")
+add_header(slide12, "Top-20 Recommendation Engine, Consensus & Structural Balance", "SPEAKER 3: Validation & Viva", slide_num=12)
 
-add_card(slide12, Inches(0.8), Inches(1.5), Inches(5.6), Inches(5.1))
-tx = slide12.shapes.add_textbox(Inches(1.0), Inches(1.7), Inches(5.2), Inches(4.7))
+add_card(slide12, Inches(0.8), Inches(1.45), Inches(5.72), Inches(5.45), accent_top=C_NAVY)
+tx = slide12.shapes.add_textbox(Inches(1.05), Inches(1.65), Inches(5.22), Inches(5.05))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "Top-5 Recommended Partners for Trader #1"; p.font.size = Pt(14); p.font.bold = True; p.font.color.rgb = C_NAVY
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+
+p = tf.paragraphs[0]; p.text = "Top-5 Recommended Partners for Trader #1"; p.font.size = Pt(14.5); p.font.bold = True; p.font.color.rgb = C_NAVY
 p = tf.add_paragraph()
-p.text = "• Rank 1: Trader #3 (57 Peers, AA: 26.94, 6/6 Consensus, Intra-Cluster #0)\n" \
-         "  XAI: 80% Community Trust | 20% Hub Liquidity\n" \
-         "• Rank 2: Trader #177 (37 Peers, AA: 14.45, 6/6 Consensus, Intra-Cluster #0)\n" \
-         "• Rank 3: Trader #14 (30 Peers, AA: 14.78, 5/6 Consensus, Intra-Cluster #0)\n" \
-         "• Rank 4: Trader #33 (35 Peers, AA: 13.88, 5/6 Consensus, Intra-Cluster #0)\n" \
-         "• Rank 5: Trader #7 (37 Peers, AA: 13.32, 5/6 Consensus, Intra-Cluster #0)\n\n" \
+p.text = "• Rank 1: Trader #3 (57 Peers, AA: 26.94, 6/6 Consensus, Cluster #0)\n" \
+         "  XAI: 80.0% Community Trust  |  20.0% Hub Liquidity\n" \
+         "• Rank 2: Trader #177 (37 Peers, AA: 14.45, 6/6 Consensus, Cluster #0)\n" \
+         "  XAI: 77.0% Community Trust  |  23.0% Hub Liquidity\n" \
+         "• Rank 3: Trader #14 (30 Peers, AA: 14.78, 5/6 Consensus, Cluster #0)\n" \
+         "• Rank 4: Trader #33 (35 Peers, AA: 13.88, 5/6 Consensus, Cluster #0)\n" \
+         "• Rank 5: Trader #7 (37 Peers, AA: 13.32, 5/6 Consensus, Cluster #0)\n\n" \
          "Cross-Algorithmic Consensus:\n" \
-         "Identifies high-conviction targets where local trust (AA/RA) and global liquidity (PA) converge.\n\n" \
-         "Heider Structural Balance Grounding:\n" \
-         "100% of recommended ties close balanced (+, +, +) triads with mutual partners, actively minimizing trading disputes."
-p.font.size = Pt(11); p.font.color.rgb = C_TEXT
+         "Pinpoints high-conviction targets where local trust (AA/RA) and global liquidity (PA) converge.\n\n" \
+         "Heider Structural Balance Proof:\n" \
+         "100% of recommended ties close balanced (+, +, +) triads with existing contacts, ensuring zero cognitive friction and minimal counterparty disputes."
+p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
 
 ego_img = ROOT / "visualizations" / "recommended_ego_network.png"
 if ego_img.exists():
-    slide12.shapes.add_picture(str(ego_img), Inches(6.8), Inches(1.5), Inches(5.7), Inches(5.1))
+    add_image_card(slide12, ego_img, Inches(6.8), Inches(1.45), Inches(5.72), Inches(5.45),
+                   "Trader #1 Ego-Network: Verified & Recommended Ties",
+                   "100% of Recommended Ties Satisfy Heider's (+, +, +) Triadic Balance",
+                   accent_color=C_PURPLE)
 
 slide12.notes_slide.notes_text_frame.text = (
     "SPEAKER 3 TALKING POINTS:\n"
@@ -579,40 +852,50 @@ slide12.notes_slide.notes_text_frame.text = (
 )
 
 # =============================================================
-# SLIDE 13: Speaker 3 - Web Dashboard Demo & Architecture
+# SLIDE 13: Speaker 3 - Web Dashboard Demo & Deliverables Checklist
 # =============================================================
 slide13 = prs.slides.add_slide(blank_layout)
-add_header(slide13, "Interactive Demonstration UI & Full System Deliverables", "SPEAKER 3: Validation & Viva")
+add_header(slide13, "Interactive Demonstration UI & Full System Deliverables", "SPEAKER 3: Validation & Viva", slide_num=13)
 
-add_card(slide13, Inches(0.8), Inches(1.5), Inches(5.7), Inches(5.1))
-tx = slide13.shapes.add_textbox(Inches(1.0), Inches(1.7), Inches(5.3), Inches(4.7))
+add_card(slide13, Inches(0.8), Inches(1.45), Inches(5.72), Inches(5.45), accent_top=C_NAVY)
+tx = slide13.shapes.add_textbox(Inches(1.05), Inches(1.65), Inches(5.22), Inches(5.05))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "Interactive Demonstration Dashboard"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_NAVY
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+
+p = tf.paragraphs[0]; p.text = "Interactive Demonstration Dashboard"; p.font.size = Pt(14.5); p.font.bold = True; p.font.color.rgb = C_NAVY
 p = tf.add_paragraph()
-p.text = "• Modern Light-Themed Web Application:\n" \
-         "  Built with Python HTTP / Flask backend and dynamic Vis.js force-directed graph canvas.\n\n" \
-         "• Core Features:\n" \
-         "  - Trader Selector: Enter any trader ID or click quick-chips.\n" \
-         "  - Algorithm Switcher: Toggle CN, Jaccard, AA, RA, PA, or Ensemble.\n" \
-         "  - Force-Directed Graph: Drag and zoom existing ties (teal) and predicted ties (dashed purple).\n" \
-         "  - Live Recommendation Table: Ranked list with mutual peers, scores, community roles, and balance status."
-p.font.size = Pt(12.5); p.font.color.rgb = C_TEXT
+p.text = "• Modern Light-Themed Web Application (localhost:5000):\n" \
+         "  Engineered with a Python Flask/HTTP backend and responsive Vis.js force-directed canvas.\n\n" \
+         "• Compact Single-Screen Layout (Zero Scroll):\n" \
+         "  Header, controls, ego-network canvas, and recommendation tables fit seamlessly on any laptop screen.\n\n" \
+         "• Four Interactive View Modes:\n" \
+         "  1. 🎯 Recommendations: Ranked Top-20 partners with mutual peer counts and balance badges.\n" \
+         "  2. 🕸️ Ego-Network: Drag-and-zoom existing ties (teal) and predicted ties (dashed purple).\n" \
+         "  3. ⚖️ Side-by-Side: Direct topological comparison of target and candidate profiles.\n" \
+         "  4. 🔬 Multi-Model Consensus: Live voting breakdown across all 6 prediction algorithms.\n\n" \
+         "• Trust Chain Provenance Modal:\n" \
+         "  Click any candidate to inspect the explicit 2-hop trust paths connecting the two traders."
+p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
 
-add_card(slide13, Inches(6.8), Inches(1.5), Inches(5.7), Inches(5.1))
-tx = slide13.shapes.add_textbox(Inches(7.0), Inches(1.7), Inches(5.3), Inches(4.7))
+add_card(slide13, Inches(6.8), Inches(1.45), Inches(5.72), Inches(5.45), accent_top=C_TEAL)
+tx = slide13.shapes.add_textbox(Inches(7.05), Inches(1.65), Inches(5.22), Inches(5.05))
 tf = tx.text_frame; tf.word_wrap = True
-p = tf.paragraphs[0]; p.text = "Complete Course Deliverables Checklist"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_TEAL
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+
+p = tf.paragraphs[0]; p.text = "Course Assessment Deliverables Checklist"; p.font.size = Pt(14.5); p.font.bold = True; p.font.color.rgb = C_TEAL_DARK
 p = tf.add_paragraph()
 p.text = "✓ Deliverable 1: Source Code & Executable Notebook\n" \
-         "  Full modular pipeline in src/ and executed 776 KB .ipynb notebook.\n\n" \
-         "✓ Deliverable 2: Network Dataset Package\n" \
-         "  1.5 MB ZIP with Alpha, OTC, 25k Synthetic & SHA-256 manifest.\n\n" \
-         "✓ Deliverable 3: Visualization Artifacts\n" \
-         "  ROC curves, Precision@K plots, HTML demo, Cytoscape GraphML.\n\n" \
-         "✓ Deliverable 4: Formal Evaluation Report (PDF)\n" \
-         "  Comprehensive 8-Page ReportLab PDF matching academic standards.\n\n" \
-         "✓ Deliverable 5: 3-Speaker Presentation Deck (.pptx & .pdf)"
-p.font.size = Pt(12.5); p.font.color.rgb = C_TEXT
+         "  Modular Python pipeline in src/ and executed 776 KB Jupyter notebook with all outputs embedded.\n\n" \
+         "✓ Deliverable 2: Network Dataset Package (.zip)\n" \
+         "  1.5 MB ZIP bundle with Bitcoin Alpha, OTC, 25k Synthetic & SHA-256 integrity manifest.\n\n" \
+         "✓ Deliverable 3: Visualization Artifacts (.png / .svg / .html)\n" \
+         "  ROC curves, PR curves, Precision@K plots, ego-network graphs, Cytoscape GraphML.\n\n" \
+         "✓ Deliverable 4: Formal Academic Report (PDF)\n" \
+         "  Publication-grade 8-page PDF matching IEEE/ACM transaction formatting.\n\n" \
+         "✓ Deliverable 5: 3-Speaker Presentation Deck (.pptx & .pdf)\n" \
+         "  Professional light-themed 14-slide widescreen deck with viva preparation.\n\n" \
+         "✓ Automated Test Suite: 16/16 Unit & Integration Tests Passing (1.21s)!"
+p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
 
 slide13.notes_slide.notes_text_frame.text = (
     "SPEAKER 3 TALKING POINTS:\n"
@@ -625,26 +908,27 @@ slide13.notes_slide.notes_text_frame.text = (
 # SLIDE 14: Speaker 3 - Viva Defense Anticipated Q&A
 # =============================================================
 slide14 = prs.slides.add_slide(blank_layout)
-add_header(slide14, "Viva Defense: Key Technical Explanations", "SPEAKER 3: Validation & Viva")
+add_header(slide14, "Viva Defense: Key Technical Explanations", "SPEAKER 3: Validation & Viva", slide_num=14)
 
 viva_items = [
     ("Q1: Why does Preferential Attachment have such a dominant ROC-AUC (0.9505)?",
-     "A: Financial OTC networks are strongly scale-free (γ ≈ 2.1). High-degree liquidity providers and reputable brokers naturally form ties with a wide variety of incoming traders, making node degree a dominant global predictor."),
+     "Answer: Financial OTC networks are strongly scale-free (γ ≈ 2.1). High-degree liquidity providers and reputable brokers naturally form ties with incoming retail traders, making node degree product a dominant global predictor of transactional connection."),
     ("Q2: If PA has high AUC, why do we need Adamic-Adar or Common Neighbors?",
-     "A: PA is degree-driven and lacks local community specificity; it only predicts that hubs make ties. Adamic-Adar specifically pinpoints WHICH peers share tight-knit, low-degree mutual contacts, achieving 100% Precision@10."),
+     "Answer: PA is degree-driven and lacks local community specificity; it only predicts that hubs make ties. Adamic-Adar specifically pinpoints WHICH peers share tight-knit, low-degree mutual contacts, achieving 100% Precision@10 & @20."),
     ("Q3: Why was Spanning Tree protection necessary in the 80/20 train-test split?",
-     "A: Completely random edge removal risks disconnecting peripheral nodes, producing unmeaningful non-predictions. Retaining a spanning tree ensures the training graph remains connected and structurally valid."),
+     "Answer: Completely random edge removal risks disconnecting peripheral nodes into isolated subgraphs, producing false zeroes in 2-hop heuristics. Preserving an MST guarantees connectivity so all nodes remain scoreable."),
     ("Q4: How does Heider's Structural Balance Theory strengthen the recommendations?",
-     "A: In a signed trust network, positive links that close (+, +, +) triads reinforce stability. Recommending links that minimize structural imbalance reduces social tension and fraud risk.")
+     "Answer: In signed trust networks, positive links that close (+, +, +) triads reinforce stability. Recommending links that minimize structural imbalance reduces social tension, fraudulent disputes, and counterparty friction.")
 ]
 
 for idx, (q, a) in enumerate(viva_items):
-    top_pos = Inches(1.5 + idx * 1.3)
-    add_card(slide14, Inches(0.8), top_pos, Inches(11.733), Inches(1.18))
-    tx = slide14.shapes.add_textbox(Inches(1.0), top_pos + Inches(0.06), Inches(11.3), Inches(1.0))
+    top_pos = Inches(1.45 + idx * 1.35)
+    c_card = add_card(slide14, Inches(0.8), top_pos, Inches(11.733), Inches(1.22), accent_top=C_TEAL if idx % 2 == 0 else C_NAVY)
+    tx = slide14.shapes.add_textbox(Inches(1.05), top_pos + Inches(0.10), Inches(11.233), Inches(1.02))
     tf = tx.text_frame; tf.word_wrap = True
-    p = tf.paragraphs[0]; p.text = q; p.font.size = Pt(13); p.font.bold = True; p.font.color.rgb = C_NAVY
-    p2 = tf.add_paragraph(); p2.text = a; p2.font.size = Pt(11); p2.font.color.rgb = C_TEXT
+    tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+    p = tf.paragraphs[0]; p.text = q; p.font.size = Pt(12.5); p.font.bold = True; p.font.color.rgb = C_NAVY
+    p2 = tf.add_paragraph(); p2.text = a; p2.font.size = Pt(10.5); p2.font.color.rgb = C_TEXT; p2.space_before = Pt(3)
 
 slide14.notes_slide.notes_text_frame.text = (
     "SPEAKER 3 TALKING POINTS:\n"

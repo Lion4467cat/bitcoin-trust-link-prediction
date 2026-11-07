@@ -1,4 +1,4 @@
-"""Ultra-responsive, light-themed full-stack HTTP server and recommendation dashboard."""
+"""Ultra-responsive, light-themed full-stack HTTP server and compact recommendation dashboard."""
 from __future__ import annotations
 
 import csv
@@ -79,59 +79,77 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
             --accent-purple: #6366F1;
             --accent-gold: #D97706;
             --accent-coral: #E11D48;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
+        html, body {
+            height: 100vh;
+            overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background: var(--bg-main);
             color: var(--text-dark);
-            padding: 24px 28px;
-            line-height: 1.5;
+            font-size: 12.5px;
+            line-height: 1.4;
         }
+        body {
+            display: flex;
+            flex-direction: column;
+            padding: 8px 12px;
+        }
+
+        /* Compact Header */
         header {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px 24px;
-            margin-bottom: 22px;
+            border-radius: 8px;
+            padding: 6px 14px;
+            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
+            gap: 12px;
+        }
+        .header-title-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             flex-wrap: wrap;
-            gap: 16px;
         }
         h1 {
-            font-size: 22px;
+            font-size: 15px;
             font-weight: 700;
             color: var(--navy);
-            margin-bottom: 4px;
+            display: inline;
         }
-        p.subtitle {
-            font-size: 13.5px;
+        .badge-dept {
+            background: #F1F5F9;
             color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
         }
         .nav-links {
             display: flex;
-            gap: 8px;
-            margin-top: 10px;
+            gap: 6px;
+            align-items: center;
             flex-wrap: wrap;
         }
         .nav-btn {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             text-decoration: none;
             color: var(--navy);
-            background: #F1F5F9;
-            padding: 5px 11px;
-            border-radius: 6px;
+            background: #F8FAFC;
+            padding: 3px 8px;
+            border-radius: 5px;
             border: 1px solid var(--border);
             transition: all 0.15s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
+            white-space: nowrap;
         }
         .nav-btn:hover {
             background: var(--primary-light);
@@ -142,56 +160,69 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
             background: var(--primary-light);
             color: var(--primary);
             border: 1px solid #CCFBF1;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
             font-weight: 700;
             white-space: nowrap;
         }
-        .container {
+
+        /* Compact App Layout */
+        .app-layout {
             display: grid;
-            grid-template-columns: 360px 1fr;
-            gap: 22px;
+            grid-template-columns: 290px 1fr;
+            gap: 10px;
+            flex: 1;
+            height: calc(100vh - 54px);
+            overflow: hidden;
         }
-        @media (max-width: 1024px) {
-            .container { grid-template-columns: 1fr; }
+        @media (max-width: 960px) {
+            .app-layout { grid-template-columns: 1fr; height: auto; overflow: auto; }
+            html, body { overflow: auto; height: auto; }
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            height: 100%;
+            overflow-y: auto;
         }
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 8px;
+            padding: 10px 12px;
             box-shadow: var(--shadow-sm);
-            margin-bottom: 22px;
         }
         .card h2 {
-            font-size: 15px;
+            font-size: 12.5px;
             font-weight: 700;
             color: var(--navy);
-            margin-bottom: 14px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
         label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--navy);
+            font-size: 10.5px;
+            font-weight: 700;
+            color: var(--text-muted);
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
         }
         input, select {
             width: 100%;
-            padding: 9px 12px;
+            padding: 5px 8px;
             border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 13.5px;
+            border-radius: 5px;
+            font-size: 12px;
             color: var(--text-dark);
             background: #FFFFFF;
-            margin-bottom: 14px;
-            transition: border 0.15s ease;
+            margin-bottom: 8px;
         }
         input:focus, select:focus {
             outline: none;
@@ -199,47 +230,46 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
         }
         .chip-group {
             display: flex;
-            gap: 6px;
-            margin-bottom: 16px;
+            gap: 4px;
+            margin-bottom: 8px;
             flex-wrap: wrap;
         }
         .chip {
             background: #F1F5F9;
             border: 1px solid var(--border);
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11.5px;
+            padding: 3px 7px;
+            border-radius: 4px;
+            font-size: 11px;
             color: var(--navy);
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.12s ease;
         }
         .chip:hover, .chip.active {
             background: var(--primary-light);
             color: var(--primary);
             border-color: var(--primary);
-            font-weight: 600;
+            font-weight: 700;
         }
         .stat-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 16px;
+            gap: 6px;
+            margin-bottom: 8px;
         }
         .stat-box {
             background: #F8FAFC;
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px 12px;
+            border-radius: 6px;
+            padding: 6px 8px;
         }
         .stat-box .title {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 2px;
+            letter-spacing: 0.3px;
         }
         .stat-box .val {
-            font-size: 17px;
+            font-size: 14px;
             font-weight: 700;
             color: var(--navy);
         }
@@ -248,35 +278,96 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
             background: var(--primary);
             color: white;
             border: none;
-            padding: 11px;
-            border-radius: 6px;
-            font-size: 13.5px;
-            font-weight: 600;
+            padding: 7px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 700;
             cursor: pointer;
-            transition: background 0.15s ease;
+            transition: background 0.12s ease;
         }
         .action-btn:hover { background: var(--primary-hover); }
-        .table-wrap {
-            overflow-x: auto;
-            max-height: 520px;
+
+        /* Main Workspace Stage */
+        .main-stage {
+            background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 8px;
+            padding: 10px 12px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+            flex-shrink: 0;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .tab-btn-row {
+            display: flex;
+            gap: 6px;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.12s ease;
+        }
+        .tab-btn.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* View Containers */
+        .view-panel {
+            flex: 1;
+            height: 100%;
+            overflow: hidden;
+            display: none;
+        }
+        .view-panel.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Compact Tables with Clean Fit */
+        .table-wrap {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: #FFFFFF;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
+            font-size: 11.5px;
+            white-space: nowrap;
         }
         th, td {
-            padding: 10px 14px;
+            padding: 6px 9px;
             text-align: left;
             border-bottom: 1px solid var(--border);
         }
         th {
             background: #F8FAFC;
             color: var(--text-muted);
-            font-weight: 600;
-            font-size: 12px;
+            font-weight: 700;
+            font-size: 11px;
             position: sticky;
             top: 0;
             z-index: 2;
@@ -287,173 +378,147 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
             background: #ECFDF5;
             color: #047857;
             border: 1px solid #A7F3D0;
-            padding: 3px 8px;
+            padding: 2px 6px;
             border-radius: 4px;
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 600;
-        }
-        #network-canvas {
-            height: 480px;
-            background: #F8FAFC;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            margin-bottom: 16px;
-        }
-        .legend-row {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            font-size: 12px;
-            margin-bottom: 14px;
-            color: var(--text-muted);
-        }
-        .legend-item { display: flex; align-items: center; gap: 6px; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-        
-        .tab-btn-row {
-            display: flex;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 16px;
-            gap: 12px;
-        }
-        .tab-btn {
-            background: none;
-            border: none;
-            padding: 9px 14px;
-            font-size: 13.5px;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.15s ease;
-        }
-        .tab-btn.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
         }
 
-        /* Light-Themed Trust Chain Modal */
+        /* Network Canvas */
+        #network-canvas {
+            flex: 1;
+            background: #F8FAFC;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            min-height: 280px;
+        }
+        .legend-bar {
+            display: flex;
+            gap: 12px;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+        /* Split View Layout */
+        .split-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            flex: 1;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.45);
+            background: rgba(15, 23, 42, 0.4);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
         .modal-box {
             background: #FFFFFF;
-            border-radius: 12px;
-            width: 760px;
+            border-radius: 10px;
+            width: 680px;
             max-width: 94%;
             max-height: 85vh;
             overflow-y: auto;
-            padding: 24px 28px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            padding: 18px 20px;
+            box-shadow: var(--shadow-md);
             border: 1px solid var(--border);
         }
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 18px;
-            padding-bottom: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
             border-bottom: 1px solid var(--border);
         }
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 22px;
-            color: var(--text-muted);
-            cursor: pointer;
-            line-height: 1;
-        }
-        .close-btn:hover { color: var(--navy); }
         .chain-path {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
-            margin: 14px 0 20px 0;
+            margin: 10px 0 14px 0;
             background: #F8FAFC;
-            padding: 14px 18px;
-            border-radius: 8px;
+            padding: 10px 14px;
+            border-radius: 6px;
             border: 1px solid var(--border);
         }
         .chain-node {
             background: #FFFFFF;
             border: 1.5px solid var(--primary);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 13px;
+            padding: 4px 10px;
+            border-radius: 14px;
+            font-size: 12px;
             font-weight: 700;
             color: var(--navy);
-            box-shadow: var(--shadow-sm);
         }
-        .chain-arrow {
-            color: var(--accent-purple);
-            font-weight: 700;
-            font-size: 14px;
-        }
+        .chain-arrow { color: var(--accent-purple); font-weight: 700; }
     </style>
 </head>
 <body>
 
     <header>
-        <div>
-            <h1>Bitcoin Web-of-Trust | Trust Partner Recommendation Dashboard</h1>
-            <p class="subtitle">Department of Machine Learning  •  Social Network Analysis (SNA)  •  Real-Time Topological Heuristics, K-Core Nucleus & Structural Balance</p>
-            <div class="nav-links">
-                <a href="/reports/link_prediction_report.pdf" target="_blank" class="nav-btn">📄 8-Page Academic Report (PDF)</a>
-                <a href="/slides/link_prediction_presentation.pdf" target="_blank" class="nav-btn">🖥️ Presentation Slides (PDF)</a>
-                <a href="/reports/team_presentation_study_guide.pdf" target="_blank" class="nav-btn">📘 Team Study Guide (PDF)</a>
-                <a href="/visualizations/topological_vs_embedding_comparison.png" target="_blank" class="nav-btn">🧠 Representation vs Heuristics</a>
-                <a href="/visualizations/k_core_and_centrality_distribution.png" target="_blank" class="nav-btn">🔬 K-Core Topography</a>
-                <a href="/visualizations/degree_assortativity_mixing.png" target="_blank" class="nav-btn">🕸️ Assortativity Mixing</a>
-                <a href="/visualizations/temporal_link_prediction_comparison.png" target="_blank" class="nav-btn">⏱️ Temporal Backtest</a>
-                <a href="/dataset_package/bitcoin_trust_dataset_package.zip" class="nav-btn">📦 Dataset Package</a>
-            </div>
+        <div class="header-title-box">
+            <h1>Bitcoin Web-of-Trust</h1>
+            <span class="badge-dept">Department of Machine Learning • SNA AAT</span>
+            <span class="badge-enterprise">34,207 Nodes • 166,907 Ties</span>
         </div>
-        <div>
-            <span class="badge-enterprise">Enterprise Scale: 34,207 Nodes • 166,907 Ties</span>
+        <div class="nav-links">
+            <a href="/reports/link_prediction_report.pdf" target="_blank" class="nav-btn">📄 Report (PDF)</a>
+            <a href="/slides/link_prediction_presentation.pdf" target="_blank" class="nav-btn">🖥️ Slides</a>
+            <a href="/reports/team_presentation_study_guide.pdf" target="_blank" class="nav-btn">📘 Study Guide</a>
+            <a href="/visualizations/topological_vs_embedding_comparison.png" target="_blank" class="nav-btn">🧠 SVD vs Heuristics</a>
+            <a href="/visualizations/k_core_and_centrality_distribution.png" target="_blank" class="nav-btn">🔬 K-Core</a>
+            <a href="/visualizations/degree_assortativity_mixing.png" target="_blank" class="nav-btn">🕸️ Assortativity</a>
+            <a href="/dataset_package/bitcoin_trust_dataset_package.zip" class="nav-btn">📦 Package</a>
         </div>
     </header>
 
-    <div class="container">
+    <div class="app-layout">
         <!-- Sidebar Controls -->
-        <div>
+        <div class="sidebar">
             <div class="card">
                 <h2>Query Parameters</h2>
                 <label>Target Trader (User ID):</label>
                 <input type="number" id="userIdInput" value="1" min="1" max="150000">
 
-                <label>Quick Select Influential Traders:</label>
+                <label>Quick Select Traders:</label>
                 <div class="chip-group">
-                    <button class="chip active" onclick="setTrader(1)">Trader #1</button>
-                    <button class="chip" onclick="setTrader(2)">Trader #2</button>
-                    <button class="chip" onclick="setTrader(7)">Trader #7</button>
-                    <button class="chip" onclick="setTrader(177)">Trader #177</button>
-                    <button class="chip" onclick="setTrader(759)">Trader #759</button>
+                    <button class="chip active" onclick="setTrader(1)">#1</button>
+                    <button class="chip" onclick="setTrader(2)">#2</button>
+                    <button class="chip" onclick="setTrader(7)">#7</button>
+                    <button class="chip" onclick="setTrader(177)">#177</button>
+                    <button class="chip" onclick="setTrader(759)">#759</button>
                 </div>
 
                 <div class="stat-grid" id="traderStats">
                     <div class="stat-box">
-                        <div class="title">Degree (Verified Ties)</div>
+                        <div class="title">Ties (Degree)</div>
                         <div class="val" id="traderDegree">511</div>
                     </div>
                     <div class="stat-box">
-                        <div class="title">Candidate 2-Hop Peers</div>
+                        <div class="title">2-Hop Peers</div>
                         <div class="val" id="traderCandidates">1,240</div>
                     </div>
                     <div class="stat-box">
-                        <div class="title">K-Core Shell & Role</div>
-                        <div class="val" style="font-size: 13px; font-weight: 700; color: #0D9488;" id="traderCoreRole">k=18 • Core Broker</div>
+                        <div class="title">K-Core Shell</div>
+                        <div class="val" style="font-size: 11.5px; color: #0D9488;" id="traderCoreRole">k=18 Core</div>
                     </div>
                     <div class="stat-box">
-                        <div class="title">Global Network Rank</div>
-                        <div class="val" style="font-size: 13px; font-weight: 700; color: #6366F1;" id="traderGlobalRank">Rank #2</div>
+                        <div class="title">Network Rank</div>
+                        <div class="val" style="font-size: 11.5px; color: #6366F1;" id="traderGlobalRank">Rank #2</div>
                     </div>
                 </div>
 
@@ -466,26 +531,26 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
                     <option value="Preferential Attachment">Preferential Attachment (PA)</option>
                 </select>
 
-                <label>Recommendations to Display:</label>
-                <select id="topKSelect">
-                    <option value="10">Top-10 Recommended Partners</option>
-                    <option value="20" selected>Top-20 Recommended Partners</option>
-                </select>
-
-                <button class="action-btn" onclick="fetchRecommendations()">Compute Real-Time Predictions</button>
+                <div style="display:flex; gap:6px;">
+                    <select id="topKSelect" style="width:50%;">
+                        <option value="10">Top-10</option>
+                        <option value="20" selected>Top-20</option>
+                    </select>
+                    <button class="action-btn" style="width:50%;" onclick="fetchRecommendations()">Predict</button>
+                </div>
             </div>
 
-            <div class="card">
-                <h2>Model Validation Scoreboard (Held-Out Test)</h2>
-                <div class="table-wrap">
+            <div class="card" style="flex:1;">
+                <h2>Model Scoreboard (Held-Out Test)</h2>
+                <div class="table-wrap" style="max-height: 180px;">
                     <table>
                         <thead>
-                            <tr><th>Algorithm</th><th>ROC-AUC</th><th>F1</th><th>P@20</th></tr>
+                            <tr><th>Algorithm</th><th>AUC</th><th>F1</th><th>P@20</th></tr>
                         </thead>
                         <tbody>
                             <tr><td>Preferential Attachment</td><td class="score-highlight">0.9505</td><td>0.8864</td><td>100%</td></tr>
                             <tr><td>Ensemble Model</td><td class="score-highlight">0.9387</td><td>0.8903</td><td>95%</td></tr>
-                            <tr><td>SVD Hadamard + LogReg</td><td class="score-highlight">0.9175</td><td>0.4522</td><td>100%</td></tr>
+                            <tr><td>SVD + LogReg</td><td class="score-highlight">0.9175</td><td>0.4522</td><td>100%</td></tr>
                             <tr><td>Adamic-Adar Index</td><td class="score-highlight">0.8366</td><td>0.6667</td><td>100%</td></tr>
                             <tr><td>Common Neighbors</td><td class="score-highlight">0.8335</td><td>0.6667</td><td>100%</td></tr>
                             <tr><td>Jaccard Coefficient</td><td class="score-highlight">0.8161</td><td>0.6667</td><td>15%</td></tr>
@@ -495,131 +560,163 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
             </div>
         </div>
 
-        <!-- Main Panel: Network Graph & Recommendations -->
-        <div>
-            <div class="card">
-                <h2>Interactive Ego-Network: Verified Ties vs. Top Predicted Ties</h2>
-                <div class="legend-row">
-                    <div class="legend-item"><span class="dot" style="background: var(--accent-gold);"></span> Target Trader</div>
-                    <div class="legend-item"><span class="dot" style="background: var(--primary);"></span> Verified Mutual Peer</div>
-                    <div class="legend-item"><span class="dot" style="background: var(--accent-coral);"></span> Top Recommended Partner</div>
-                    <div class="legend-item"><span style="border-bottom: 2px solid var(--primary); width: 14px; display:inline-block;"></span> Existing Verified Tie</div>
-                    <div class="legend-item"><span style="border-bottom: 2px dashed var(--accent-purple); width: 14px; display:inline-block;"></span> Predicted Trust Tie</div>
+        <!-- Main Workspace Stage with Responsive Tabs -->
+        <div class="main-stage">
+            <div class="main-header">
+                <div class="tab-btn-row">
+                    <button class="tab-btn active" id="btnViewTable" onclick="switchMainView('table')">🎯 Recommendations</button>
+                    <button class="tab-btn" id="btnViewGraph" onclick="switchMainView('graph')">🕸️ Ego-Network</button>
+                    <button class="tab-btn" id="btnViewSplit" onclick="switchMainView('split')">⚖️ Side-by-Side</button>
+                    <button class="tab-btn" id="btnViewConsensus" onclick="switchMainView('consensus')">🔬 Multi-Model Consensus</button>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span id="recSummaryText" style="font-size: 11.5px; color: var(--text-muted); font-weight: 600;">Trader #1 Top Recommendations</span>
+                    <button class="chip" onclick="downloadCSV()" style="font-weight: 700; color: var(--primary);">📥 Export CSV</button>
+                </div>
+            </div>
+
+            <!-- VIEW 1: TABLE ONLY (DEFAULT) -->
+            <div id="viewTable" class="view-panel active">
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Candidate</th>
+                                <th>Peers</th>
+                                <th>Jaccard</th>
+                                <th>Adamic-Adar</th>
+                                <th>PA Score</th>
+                                <th>Ensemble</th>
+                                <th>XAI Attribution</th>
+                                <th>Role</th>
+                                <th>Balance</th>
+                                <th>Audit</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recTableBody">
+                            <tr><td colspan="11" style="text-align: center; color: var(--text-muted); padding: 20px;">Computing real-time recommendations...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- VIEW 2: GRAPH ONLY -->
+            <div id="viewGraph" class="view-panel">
+                <div class="legend-bar">
+                    <div class="legend-item"><span class="dot" style="background: var(--accent-gold);"></span> Target</div>
+                    <div class="legend-item"><span class="dot" style="background: var(--primary);"></span> Mutual Peer</div>
+                    <div class="legend-item"><span class="dot" style="background: var(--accent-coral);"></span> Predicted Partner</div>
+                    <div class="legend-item"><span style="border-bottom: 2px solid var(--primary); width: 12px; display:inline-block;"></span> Verified Tie</div>
+                    <div class="legend-item"><span style="border-bottom: 2px dashed var(--accent-purple); width: 12px; display:inline-block;"></span> Predicted Link</div>
                 </div>
                 <div id="network-canvas"></div>
             </div>
 
-            <div class="card">
-                <div class="tab-btn-row">
-                    <button class="tab-btn active" id="tabPrimaryBtn" onclick="switchView('primary')">🎯 Primary Recommendations</button>
-                    <button class="tab-btn" id="tabConsensusBtn" onclick="switchView('consensus')">🔬 Multi-Algorithm Consensus Matrix</button>
-                </div>
-
-                <!-- Primary View -->
-                <div id="primaryView">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                        <h2 id="recTitle" style="margin-bottom:0;">Top-20 Recommended Trading Partners for Trader #1</h2>
-                        <button class="chip" onclick="downloadCSV()" style="font-weight:600; color:var(--primary);">📥 Export as CSV</button>
-                    </div>
+            <!-- VIEW 3: SPLIT (SIDE-BY-SIDE TABLE + GRAPH) -->
+            <div id="viewSplit" class="view-panel">
+                <div class="split-grid">
                     <div class="table-wrap">
                         <table>
                             <thead>
                                 <tr>
                                     <th>Rank</th>
-                                    <th>Candidate Trader</th>
-                                    <th>Common Peers</th>
-                                    <th>Jaccard</th>
-                                    <th>Adamic-Adar</th>
-                                    <th>PA Score</th>
-                                    <th>Ensemble</th>
-                                    <th>XAI Feature Attribution</th>
-                                    <th>Community Role</th>
-                                    <th>Structural Balance</th>
-                                    <th>Trust Audit</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recBody">
-                                <tr><td colspan="11" style="text-align: center; color: var(--text-muted);">Computing real-time recommendations...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Consensus View -->
-                <div id="consensusView" style="display: none;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                        <h2 id="consensusTitle" style="margin-bottom:0;">Cross-Algorithmic Consensus Matrix (Agreement Across All 6 Models)</h2>
-                        <span style="font-size:12px; color:var(--text-muted);">Evaluates Ensemble, AA, CN, Jaccard, PA, and RA</span>
-                    </div>
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Consensus Level</th>
                                     <th>Candidate</th>
-                                    <th>Mutual Peers</th>
+                                    <th>Peers</th>
+                                    <th>AA</th>
                                     <th>Ensemble</th>
-                                    <th>Adamic-Adar</th>
-                                    <th>Common Neigh.</th>
-                                    <th>Jaccard</th>
-                                    <th>Pref. Attach.</th>
-                                    <th>Resource Alloc.</th>
-                                    <th>Community Role</th>
-                                    <th>Structural Balance</th>
-                                    <th>Trust Audit</th>
+                                    <th>Audit</th>
                                 </tr>
                             </thead>
-                            <tbody id="consensusBody">
-                                <tr><td colspan="12" style="text-align: center; color: var(--text-muted);">Computing consensus matrix...</td></tr>
+                            <tbody id="splitTableBody">
+                                <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Loading...</td></tr>
                             </tbody>
                         </table>
                     </div>
+                    <div style="display:flex; flex-direction:column; height:100%;">
+                        <div id="splitCanvas" style="flex:1; background:#F8FAFC; border:1px solid var(--border); border-radius:6px;"></div>
+                    </div>
                 </div>
+            </div>
 
+            <!-- VIEW 4: CONSENSUS MATRIX -->
+            <div id="viewConsensus" class="view-panel">
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Consensus Level</th>
+                                <th>Candidate</th>
+                                <th>Peers</th>
+                                <th>Ensemble</th>
+                                <th>AA</th>
+                                <th>CN</th>
+                                <th>Jaccard</th>
+                                <th>PA</th>
+                                <th>RA</th>
+                                <th>Role</th>
+                                <th>Balance</th>
+                                <th>Audit</th>
+                            </tr>
+                        </thead>
+                        <tbody id="consensusTableBody">
+                            <tr><td colspan="12" style="text-align: center; color: var(--text-muted); padding: 20px;">Computing consensus matrix across 6 models...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Light-Themed Trust Chain Modal -->
+    <!-- Light-Themed Trust Chain Provenance Modal -->
     <div id="trustModal" class="modal-overlay" onclick="if(event.target===this) closeModal()">
         <div class="modal-box">
             <div class="modal-header">
-                <h3 style="font-size: 16px; font-weight: 700; color: var(--navy);" id="modalTitle">Trust Provenance & Shortest Chain</h3>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
+                <h3 style="font-size: 14px; font-weight: 700; color: var(--navy);" id="modalTitle">Trust Provenance Audit Trail</h3>
+                <button onclick="closeModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted);">&times;</button>
             </div>
             <div id="modalContent">
-                <p style="color: var(--text-muted); font-size: 13px;">Loading trust provenance and mutual intermediaries...</p>
+                <p style="color: var(--text-muted); font-size: 12px;">Loading trust provenance and mutual intermediaries...</p>
             </div>
         </div>
     </div>
 
     <script>
         let networkInstance = null;
+        let splitNetworkInstance = null;
         let currentRecs = [];
-        let currentView = 'primary';
+        let currentGraphData = null;
+        let currentActiveView = 'table';
 
         function setTrader(id) {
             document.getElementById('userIdInput').value = id;
             document.querySelectorAll('.chip-group .chip').forEach(btn => btn.classList.remove('active'));
             if (event && event.target) event.target.classList.add('active');
             fetchRecommendations();
-            if (currentView === 'consensus') {
+            if (currentActiveView === 'consensus') {
                 fetchConsensus();
             }
         }
 
-        function switchView(view) {
-            currentView = view;
-            if (view === 'primary') {
-                document.getElementById('primaryView').style.display = 'block';
-                document.getElementById('consensusView').style.display = 'none';
-                document.getElementById('tabPrimaryBtn').classList.add('active');
-                document.getElementById('tabConsensusBtn').classList.remove('active');
-            } else {
-                document.getElementById('primaryView').style.display = 'none';
-                document.getElementById('consensusView').style.display = 'block';
-                document.getElementById('tabPrimaryBtn').classList.remove('active');
-                document.getElementById('tabConsensusBtn').classList.add('active');
+        function switchMainView(view) {
+            currentActiveView = view;
+            ['table', 'graph', 'split', 'consensus'].forEach(v => {
+                const panel = document.getElementById('view' + v.charAt(0).toUpperCase() + v.slice(1));
+                const btn = document.getElementById('btnView' + v.charAt(0).toUpperCase() + v.slice(1));
+                if (panel) panel.classList.remove('active');
+                if (btn) btn.classList.remove('active');
+            });
+
+            const activePanel = document.getElementById('view' + view.charAt(0).toUpperCase() + view.slice(1));
+            const activeBtn = document.getElementById('btnView' + view.charAt(0).toUpperCase() + view.slice(1));
+            if (activePanel) activePanel.classList.add('active');
+            if (activeBtn) activeBtn.classList.add('active');
+
+            if (view === 'graph' && currentGraphData) {
+                setTimeout(() => renderGraph(currentGraphData, 'network-canvas'), 50);
+            } else if (view === 'split' && currentGraphData) {
+                setTimeout(() => renderGraph(currentGraphData, 'splitCanvas'), 50);
+            } else if (view === 'consensus') {
                 fetchConsensus();
             }
         }
@@ -629,7 +726,7 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
             const model = document.getElementById('modelSelect').value;
             const topK = document.getElementById('topKSelect').value;
 
-            document.getElementById('recTitle').innerText = `Top-${topK} Recommended Partners for Trader #${userId} (${model})`;
+            document.getElementById('recSummaryText').innerText = `Trader #${userId} Top-${topK} (${model})`;
 
             try {
                 const response = await fetch(`/api/recommend?user_id=${userId}&top_k=${topK}&model=${encodeURIComponent(model)}`);
@@ -641,36 +738,56 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
                 }
 
                 currentRecs = data.recommendations;
+                currentGraphData = data.graph;
 
                 // Update trader stats
                 if (data.stats) {
                     document.getElementById('traderDegree').innerText = Number(data.stats.degree).toLocaleString();
                     document.getElementById('traderCandidates').innerText = Number(data.stats.candidates).toLocaleString();
                     document.getElementById('traderCoreRole').innerText = `k=${data.stats.core_number} • ${data.stats.role}`;
-                    document.getElementById('traderGlobalRank').innerText = `Rank #${data.stats.global_rank} (PR: ${(data.stats.pagerank * 100).toFixed(3)}%)`;
+                    document.getElementById('traderGlobalRank').innerText = `Rank #${data.stats.global_rank}`;
                 }
 
-                const tbody = document.getElementById('recBody');
+                // Render Main Table
+                const tbody = document.getElementById('recTableBody');
                 tbody.innerHTML = '';
+                const splitTbody = document.getElementById('splitTableBody');
+                splitTbody.innerHTML = '';
+
                 data.recommendations.forEach(r => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td style="font-weight: 700; color: var(--accent-gold);">#${r.rank}</td>
                         <td style="font-weight: 600;">Trader #${r.target_user}</td>
-                        <td>${r.common_neighbors} mutuals</td>
+                        <td>${r.common_neighbors}</td>
                         <td>${Number(r.jaccard).toFixed(4)}</td>
                         <td style="color: var(--primary); font-weight: 600;">${Number(r.adamic_adar).toFixed(2)}</td>
                         <td>${Number(r.preferential_attachment).toLocaleString()}</td>
                         <td style="font-weight:600; color:var(--accent-purple);">${Number(r.ensemble_score).toFixed(4)}</td>
-                        <td><span style="font-size:10.5px; color:#334155; font-weight:600; background:#F8FAFC; padding:3px 7px; border-radius:6px; border:1px solid #CBD5E1; white-space:nowrap;">${r.feature_attribution || '80% Trust | 20% Hub'}</span></td>
-                        <td><span style="background:#F1F5F9; color:#0F766E; padding:3px 8px; border-radius:12px; font-size:11px; font-weight:600; border:1px solid #CCFBF1; white-space:nowrap;">${r.community_role || 'Intra-Cluster'}</span></td>
-                        <td><span class="badge-balance">${r.structural_balance_status}</span></td>
-                        <td><button class="chip" onclick="inspectTrustChain(${userId}, ${r.target_user})" style="font-size:11px; padding:3px 8px; color:var(--primary); font-weight:600; white-space:nowrap;">🔍 Audit Chain</button></td>
+                        <td><span style="font-size:10px; color:#334155; font-weight:600; background:#F8FAFC; padding:2px 5px; border-radius:4px; border:1px solid #CBD5E1;">${r.feature_attribution || '80% Trust | 20% Hub'}</span></td>
+                        <td><span style="background:#F1F5F9; color:#0F766E; padding:2px 6px; border-radius:10px; font-size:10px; font-weight:600; border:1px solid #CCFBF1;">${r.community_role || 'Intra-Cluster'}</span></td>
+                        <td><span class="badge-balance">${r.structural_balance_status.replace('Balanced ', '')}</span></td>
+                        <td><button class="chip" onclick="inspectTrustChain(${userId}, ${r.target_user})" style="font-size:10.5px; padding:2px 6px; color:var(--primary); font-weight:700;">🔍 Audit</button></td>
                     `;
                     tbody.appendChild(tr);
+
+                    const trSplit = document.createElement('tr');
+                    trSplit.innerHTML = `
+                        <td style="font-weight: 700; color: var(--accent-gold);">#${r.rank}</td>
+                        <td style="font-weight: 600;">#${r.target_user}</td>
+                        <td>${r.common_neighbors}</td>
+                        <td style="color: var(--primary); font-weight: 600;">${Number(r.adamic_adar).toFixed(2)}</td>
+                        <td style="color: var(--accent-purple); font-weight: 600;">${Number(r.ensemble_score).toFixed(4)}</td>
+                        <td><button class="chip" onclick="inspectTrustChain(${userId}, ${r.target_user})" style="font-size:10px; padding:1px 5px; color:var(--primary);">🔍</button></td>
+                    `;
+                    splitTbody.appendChild(trSplit);
                 });
 
-                renderGraph(data.graph);
+                if (currentActiveView === 'graph') {
+                    renderGraph(data.graph, 'network-canvas');
+                } else if (currentActiveView === 'split') {
+                    renderGraph(data.graph, 'splitCanvas');
+                }
             } catch (err) {
                 console.error(err);
             }
@@ -678,9 +795,8 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
 
         async function fetchConsensus() {
             const userId = document.getElementById('userIdInput').value;
-            document.getElementById('consensusTitle').innerText = `Cross-Algorithmic Consensus Matrix for Trader #${userId}`;
-            const tbody = document.getElementById('consensusBody');
-            tbody.innerHTML = '<tr><td colspan="12" style="text-align: center; color: var(--text-muted);">Computing consensus matrix across 6 models...</td></tr>';
+            const tbody = document.getElementById('consensusTableBody');
+            tbody.innerHTML = '<tr><td colspan="12" style="text-align: center; color: var(--text-muted); padding: 15px;">Computing consensus matrix across 6 models...</td></tr>';
 
             try {
                 const response = await fetch(`/api/consensus?user_id=${userId}`);
@@ -700,8 +816,8 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
                 data.consensus.forEach(c => {
                     const tr = document.createElement('tr');
                     const badge = c.is_high_consensus 
-                        ? `<span style="background:#ECFDF5; color:#047857; border:1px solid #A7F3D0; padding:3px 8px; border-radius:12px; font-weight:700; font-size:11px; white-space:nowrap;">★ ${c.consensus_strength} High Consensus</span>`
-                        : `<span style="background:#F1F5F9; color:#475569; border:1px solid #E2E8F0; padding:3px 8px; border-radius:12px; font-weight:600; font-size:11px; white-space:nowrap;">${c.consensus_strength}</span>`;
+                        ? `<span style="background:#ECFDF5; color:#047857; border:1px solid #A7F3D0; padding:2px 6px; border-radius:10px; font-weight:700; font-size:10.5px;">★ ${c.consensus_strength} High</span>`
+                        : `<span style="background:#F1F5F9; color:#475569; border:1px solid #E2E8F0; padding:2px 6px; border-radius:10px; font-weight:600; font-size:10.5px;">${c.consensus_strength}</span>`;
                     
                     const formatRank = (m) => {
                         const r = c.ranks[m];
@@ -711,16 +827,16 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
                     tr.innerHTML = `
                         <td>${badge}</td>
                         <td style="font-weight: 700;">Trader #${c.candidate_id}</td>
-                        <td>${c.common_neighbors} mutuals</td>
+                        <td>${c.common_neighbors}</td>
                         <td>${formatRank('Ensemble')}</td>
                         <td>${formatRank('Adamic-Adar')}</td>
                         <td>${formatRank('Common Neighbors')}</td>
                         <td>${formatRank('Jaccard')}</td>
                         <td>${formatRank('Preferential Attachment')}</td>
                         <td>${formatRank('Resource Allocation')}</td>
-                        <td><span style="background:#F1F5F9; color:#0F766E; padding:3px 8px; border-radius:12px; font-size:11px; font-weight:600; border:1px solid #CCFBF1; white-space:nowrap;">${c.community_role}</span></td>
-                        <td><span class="badge-balance">${c.balance}</span></td>
-                        <td><button class="chip" onclick="inspectTrustChain(${userId}, ${c.candidate_id})" style="font-size:11px; padding:3px 8px; color:var(--primary); font-weight:600; white-space:nowrap;">🔍 Audit Chain</button></td>
+                        <td><span style="background:#F1F5F9; color:#0F766E; padding:2px 6px; border-radius:10px; font-size:10px; font-weight:600;">${c.community_role}</span></td>
+                        <td><span class="badge-balance">${c.balance.replace('Balanced ', '')}</span></td>
+                        <td><button class="chip" onclick="inspectTrustChain(${userId}, ${c.candidate_id})" style="font-size:10.5px; padding:2px 6px; color:var(--primary); font-weight:700;">🔍 Audit</button></td>
                     `;
                     tbody.appendChild(tr);
                 });
@@ -734,8 +850,8 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
             const title = document.getElementById('modalTitle');
             const content = document.getElementById('modalContent');
 
-            title.innerText = `Trust Provenance & Audit Trail: Trader #${source} ➔ Trader #${target}`;
-            content.innerHTML = '<p style="color:var(--text-muted); padding:16px 0;">Computing shortest path and mutual peer provenance...</p>';
+            title.innerText = `Trust Provenance: Trader #${source} ➔ Trader #${target}`;
+            content.innerHTML = '<p style="color:var(--text-muted); padding:10px 0;">Computing shortest path and mutual peer provenance...</p>';
             modal.style.display = 'flex';
 
             try {
@@ -754,7 +870,7 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
                         const isTarget = (idx === data.path.length - 1);
                         const isSource = (idx === 0);
                         const badgeColor = isSource ? 'var(--accent-gold)' : (isTarget ? 'var(--accent-coral)' : 'var(--primary)');
-                        pathHTML += `<span class="chain-node" style="border-color:${badgeColor};">Trader #${node} ${isSource ? '(Query)' : (isTarget ? '(Target)' : '(Intermediary)')}</span>`;
+                        pathHTML += `<span class="chain-node" style="border-color:${badgeColor};">Trader #${node} ${isSource ? '(Query)' : (isTarget ? '(Target)' : '(Bridge)')}</span>`;
                         if (idx < data.path.length - 1) {
                             pathHTML += '<span class="chain-arrow">➔</span>';
                         }
@@ -763,18 +879,18 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
                 }
 
                 let intermediariesHTML = `
-                    <div style="margin-top:16px;">
-                        <h4 style="font-size:13px; font-weight:700; color:var(--navy); margin-bottom:8px;">Top Mutual Intermediaries (Ranked by Exclusivity / Adamic-Adar Weight):</h4>
-                        <div class="table-wrap" style="max-height:240px;">
+                    <div style="margin-top:12px;">
+                        <h4 style="font-size:11.5px; font-weight:700; color:var(--navy); margin-bottom:6px;">Top Mutual Intermediaries (Ranked by Exclusivity / Adamic-Adar Weight):</h4>
+                        <div class="table-wrap" style="max-height:180px;">
                             <table>
                                 <thead>
                                     <tr>
                                         <th>Intermediary</th>
                                         <th>Degree</th>
-                                        <th>AA Weight (1/ln d)</th>
-                                        <th>Rating (${source} ➔ Int)</th>
-                                        <th>Rating (Int ➔ ${target})</th>
-                                        <th>Heider Triad</th>
+                                        <th>AA Weight</th>
+                                        <th>Rating (${source}➔Int)</th>
+                                        <th>Rating (Int➔${target})</th>
+                                        <th>Triad Sign</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -796,14 +912,11 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
                 intermediariesHTML += '</tbody></table></div></div>';
 
                 content.innerHTML = `
-                    <div style="display:flex; gap:12px; margin-bottom:12px; flex-wrap:wrap;">
-                        <span style="background:#F0FDFA; color:#0F766E; border:1px solid #CCFBF1; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:700;">Shortest Distance: ${data.path_length} Hops</span>
-                        <span style="background:#EEF2FF; color:#4338CA; border:1px solid #E0E7FF; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:700;">${data.mutual_count} Mutual Trusted Brokers</span>
-                        <span style="background:#ECFDF5; color:#047857; border:1px solid #A7F3D0; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:700;">100% (+, +, +) Balanced Triads</span>
+                    <div style="display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+                        <span style="background:#F0FDFA; color:#0F766E; border:1px solid #CCFBF1; padding:3px 8px; border-radius:10px; font-size:11px; font-weight:700;">Distance: ${data.path_length} Hops</span>
+                        <span style="background:#EEF2FF; color:#4338CA; border:1px solid #E0E7FF; padding:3px 8px; border-radius:10px; font-size:11px; font-weight:700;">${data.mutual_count} Mutual Brokers</span>
+                        <span style="background:#ECFDF5; color:#047857; border:1px solid #A7F3D0; padding:3px 8px; border-radius:10px; font-size:11px; font-weight:700;">100% (+, +, +) Balanced</span>
                     </div>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:6px;">
-                        The recommendation of <b>Trader #${target}</b> to <b>Trader #${source}</b> is verified through <b>${data.mutual_count} mutual counterparties</b>. The shortest geodesic distance is <b>${data.path_length} hops</b>, satisfying both triadic closure and Heider's balance criteria without counterparty friction.
-                    </p>
                     ${pathHTML}
                     ${intermediariesHTML}
                 `;
@@ -817,8 +930,9 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
             document.getElementById('trustModal').style.display = 'none';
         }
 
-        function renderGraph(graphData) {
-            const container = document.getElementById('network-canvas');
+        function renderGraph(graphData, containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
             const data = {
                 nodes: new vis.DataSet(graphData.nodes),
                 edges: new vis.DataSet(graphData.edges)
@@ -827,21 +941,18 @@ LIGHT_DASHBOARD_HTML = """<!DOCTYPE html>
                 physics: {
                     solver: 'forceAtlas2Based',
                     forceAtlas2Based: {
-                        gravitationalConstant: -45,
-                        centralGravity: 0.012,
-                        springLength: 100,
+                        gravitationalConstant: -40,
+                        centralGravity: 0.015,
+                        springLength: 85,
                         springConstant: 0.08
                     },
-                    maxVelocity: 25,
-                    stabilization: { iterations: 120 }
+                    maxVelocity: 20,
+                    stabilization: { iterations: 100 }
                 },
                 interaction: { hover: true, tooltipDelay: 150, zoomView: true, dragView: true },
                 nodes: { shape: 'dot' }
             };
-            if (networkInstance) {
-                networkInstance.destroy();
-            }
-            networkInstance = new vis.Network(container, data, options);
+            new vis.Network(container, data, options);
         }
 
         function downloadCSV() {
@@ -912,8 +1023,8 @@ class CustomHandler(SimpleHTTPRequestHandler):
                 "id": user_id,
                 "label": f"Trader #{user_id}\\n(Target)",
                 "color": "#D97706",
-                "size": 28,
-                "font": {"color": "#0F172A", "size": 13, "bold": True}
+                "size": 24,
+                "font": {"color": "#0F172A", "size": 12, "bold": True}
             }]
             edges = []
 
@@ -923,10 +1034,10 @@ class CustomHandler(SimpleHTTPRequestHandler):
                     "id": p,
                     "label": f"#{p}",
                     "color": "#0D9488",
-                    "size": 15,
-                    "font": {"color": "#0F172A", "size": 10}
+                    "size": 13,
+                    "font": {"color": "#0F172A", "size": 9}
                 })
-                edges.append({"from": user_id, "to": p, "color": {"color": "#0D9488", "opacity": 0.6}, "width": 2})
+                edges.append({"from": user_id, "to": p, "color": {"color": "#0D9488", "opacity": 0.6}, "width": 1.8})
 
             # Add top recommended candidate ties (dashed purple)
             for r_id in top_recs_nodes:
@@ -934,15 +1045,15 @@ class CustomHandler(SimpleHTTPRequestHandler):
                     "id": r_id,
                     "label": f"#{r_id}\\n[Rec]",
                     "color": "#E11D48",
-                    "size": 20,
-                    "font": {"color": "#0F172A", "size": 11, "bold": True}
+                    "size": 18,
+                    "font": {"color": "#0F172A", "size": 10, "bold": True}
                 })
                 edges.append({
                     "from": user_id,
                     "to": r_id,
                     "color": {"color": "#6366F1", "opacity": 0.9},
-                    "width": 2.5,
-                    "dashes": [6, 4]
+                    "width": 2.2,
+                    "dashes": [5, 4]
                 })
 
             cent = centrality_dict.get(user_id, {

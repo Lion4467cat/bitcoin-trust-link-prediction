@@ -1,7 +1,12 @@
 .PHONY: help test pipeline temporal assort centrality embeddings notebook report slides study-guide package build-all serve status
 
-PYTHON := MPLCONFIGDIR=/tmp .venv/bin/python
-PYTEST := MPLCONFIGDIR=/tmp .venv/bin/pytest
+ifeq ($(OS),Windows_NT)
+	PYTHON := .venv/Scripts/python.exe
+	PYTEST := .venv/Scripts/pytest.exe
+else
+	PYTHON := MPLCONFIGDIR=/tmp .venv/bin/python
+	PYTEST := MPLCONFIGDIR=/tmp .venv/bin/pytest
+endif
 
 help:
 	@echo "======================================================================"
@@ -16,7 +21,7 @@ help:
 	@echo " make notebook    : Recompile & execute master Jupyter notebook"
 	@echo " make report      : Recompile formal 8-page academic PDF report"
 	@echo " make slides      : Recompile 14-slide presentation deck (PPTX & PDF)"
-	@echo " make study-guide : Recompile printable team viva study guide PDF"
+	@echo " make study-guide : Recompile printable team presentation study guide PDF"
 	@echo " make package     : Rebuild dataset package ZIP with SHA-256 manifest"
 	@echo " make build-all   : Rebuild all deliverables end-to-end"
 	@echo " make serve       : Launch live web dashboard on http://localhost:5000"

@@ -57,7 +57,7 @@ print(f"Unbalanced triads: {int(np.sum(triangle_products < 0)):,} ({np.mean(tria
 The null model holds the undirected graph fixed and randomly shuffles its observed edge signs. Each permutation therefore preserves the topology and the total numbers of positive and negative ties. It does not preserve each user's own balance of positive and negative ties. We use 1,000 permutations with a fixed random seed. The one-sided plus-one permutation p-value is `(1 + number of null scores >= observed) / (1 + number of permutations)`."""),
     nbformat.v4.new_code_cell("""# Reproduce the full pipeline and write all figures and machine-readable results.
 analyze.main(verbose=False)
-summary = json.loads((ROOT / "outputs" / "summary.json").read_text())
+summary = json.loads((ROOT / "outputs" / "summary.json").read_text(encoding="utf-8"))
 result_table = pd.DataFrame([
     ("Users", f\"{summary['users_in_projection']:,}\"),
     ("Signed ties", f\"{summary['signed_ties']:,}\"),

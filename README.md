@@ -35,30 +35,30 @@ In over-the-counter (OTC) cryptocurrency exchange networks, anonymous traders fa
 
 | Rubric Deliverable | File Path | Status |
 | :--- | :--- | :---: |
-| **Deliverable 1: Source Code & Executable Notebook** | [`src/`](file:///home/tinkerer/Desktop/SNA-AAT/src/) & [`notebooks/bitcoin_link_prediction_recommendation.ipynb`](file:///home/tinkerer/Desktop/SNA-AAT/notebooks/bitcoin_link_prediction_recommendation.ipynb) | ✅ **100% Complete** (1.3 MB Executed) |
-| **Deliverable 2: Network Dataset Package** | [`dataset_package/bitcoin_trust_dataset_package.zip`](file:///home/tinkerer/Desktop/SNA-AAT/dataset_package/bitcoin_trust_dataset_package.zip) | ✅ **100% Complete** (1.64 MB with SHA-256) |
-| **Deliverable 3: Network Visualization Artifacts** | [`visualizations/`](file:///home/tinkerer/Desktop/SNA-AAT/visualizations/) & [`outputs/bitcoin_link_prediction.graphml`](file:///home/tinkerer/Desktop/SNA-AAT/outputs/bitcoin_link_prediction.graphml) | ✅ **100% Complete** (PNG, SVG, Cytoscape) |
-| **Deliverable 4: Formatted Evaluation Report** | [`reports/link_prediction_report.pdf`](file:///home/tinkerer/Desktop/SNA-AAT/reports/link_prediction_report.pdf) | ✅ **100% Complete** (Exact 8-Page Academic PDF) |
-| **Deliverable 5: Presentation Deck (.pptx / .pdf)** | [`slides/link_prediction_presentation.pptx`](file:///home/tinkerer/Desktop/SNA-AAT/slides/link_prediction_presentation.pptx) & [`.pdf`](file:///home/tinkerer/Desktop/SNA-AAT/slides/link_prediction_presentation.pdf) | ✅ **100% Complete** (14 Slides, 3-Speaker Plan) |
-| **Bonus: Interactive Web Dashboard** | [`src/serve.py`](file:///home/tinkerer/Desktop/SNA-AAT/src/serve.py) running at `http://localhost:5000` | ✅ **100% Complete** (100% Offline-Ready) |
-| **Bonus: Team Presentation & Viva Study Guide** | [`TEAM_STUDY_GUIDE.md`](file:///home/tinkerer/Desktop/SNA-AAT/TEAM_STUDY_GUIDE.md) & [`reports/team_presentation_study_guide.pdf`](file:///home/tinkerer/Desktop/SNA-AAT/reports/team_presentation_study_guide.pdf) | ✅ **100% Complete** (Word-for-Word Scripts) |
-| **Bonus: Automated Test Suite** | [`tests/test_pipeline.py`](file:///home/tinkerer/Desktop/SNA-AAT/tests/test_pipeline.py) | ✅ **100% Complete** (10 of 10 Passed) |
+| **Deliverable 1: Source Code & Executable Notebook** | [`src/`](src/) & [`notebooks/bitcoin_link_prediction_recommendation.ipynb`](notebooks/bitcoin_link_prediction_recommendation.ipynb) | ✅ **100% Complete** (1.3 MB Executed) |
+| **Deliverable 2: Network Dataset Package** | [`dataset_package/bitcoin_trust_dataset_package.zip`](dataset_package/bitcoin_trust_dataset_package.zip) | ✅ **100% Complete** (1.64 MB with SHA-256) |
+| **Deliverable 3: Network Visualization Artifacts** | [`visualizations/`](visualizations/) & [`outputs/bitcoin_link_prediction.graphml`](outputs/bitcoin_link_prediction.graphml) | ✅ **100% Complete** (PNG, SVG, Cytoscape) |
+| **Deliverable 4: Formatted Evaluation Report** | [`reports/link_prediction_report.pdf`](reports/link_prediction_report.pdf) | ✅ **100% Complete** (Exact 8-Page Academic PDF) |
+| **Deliverable 5: Presentation Deck (.pptx / .pdf)** | [`slides/link_prediction_presentation.pptx`](slides/link_prediction_presentation.pptx) & [`.pdf`](slides/link_prediction_presentation.pdf) | ✅ **100% Complete** (14 Slides, 3-Speaker Plan) |
+| **Bonus: Interactive Web Dashboard** | [`src/serve.py`](src/serve.py) running at `http://localhost:5000` | ✅ **100% Complete** (100% Offline-Ready) |
+| **Bonus: Team Presentation Study Guide** | [`TEAM_STUDY_GUIDE.md`](TEAM_STUDY_GUIDE.md) & [`reports/team_presentation_study_guide.pdf`](reports/team_presentation_study_guide.pdf) | ✅ **100% Complete** (6-Page Master Handbook) |
+| **Bonus: Automated Test Suite** | [`tests/test_pipeline.py`](tests/test_pipeline.py) | ✅ **100% Complete** (16 of 16 Passed) |
 
 ---
 
 ## 3-Person Team Presentation Structure
 
-The slide deck ([`slides/link_prediction_presentation.pdf`](file:///home/tinkerer/Desktop/SNA-AAT/slides/link_prediction_presentation.pdf)) and study guide are structured into 3 distinct speaker allocations:
+The slide deck ([`slides/link_prediction_presentation.pdf`](slides/link_prediction_presentation.pdf)) and study guide are structured into 3 distinct speaker allocations:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│ SPEAKER 1: Problem Definition, Datasets, Scale-Free Topology & 80/20   │
+│ SPEAKER 1: Problem Definition, Datasets, Scale-Free Topology & Balance │
 │            (Slides 1 – 5)                                              │
 ├────────────────────────────────────────────────────────────────────────┤
-│ SPEAKER 2: The 5 Algorithms (CN, Jaccard, AA, RA, PA) & Ensemble       │
+│ SPEAKER 2: 80/20 MST Split, 5 Heuristics, Rank Ensemble & SVD Baseline │
 │            (Slides 6 – 9)                                              │
 ├────────────────────────────────────────────────────────────────────────┤
-│ SPEAKER 3: Results (ROC/PR), Precision@K, Top-20 Demo & Viva Defense   │
+│ SPEAKER 3: Results (ROC/PR), Precision@K, Top-20 Demo & System Design  │
 │            (Slides 10 – 14)                                            │
 └────────────────────────────────────────────────────────────────────────┘
 ```
@@ -103,7 +103,7 @@ SNA-AAT/
 │   ├── build_link_prediction_report.py # ReportLab PDF builder
 │   ├── link_prediction_report.pdf      # Polished, publication-grade 8-page academic report
 │   ├── build_study_guide_pdf.py        # Team study guide PDF builder
-│   └── team_presentation_study_guide.pdf # Printable 2-page viva cheat sheet
+│   └── team_presentation_study_guide.pdf # Comprehensive 6-page master presentation handbook
 ├── slides/
 │   ├── build_link_prediction_deck.py   # PPTX slide builder & LibreOffice PDF exporter
 │   ├── link_prediction_presentation.pptx # 16:9 widescreen presentation deck (14 slides)
@@ -114,52 +114,57 @@ SNA-AAT/
 
 ---
 
-## Quick Start & Reproduction
+## Quick Start & Reproduction (Windows, macOS & Linux)
 
-### 1. Run Automated Unit Tests
+### Option A: Windows Quick Start (One-Click Batch Scripts or PowerShell/CMD)
+
+1. **Clone the repository:**
+   ```powershell
+   git clone https://github.com/Lion4467cat/bitcoin-trust-link-prediction.git
+   cd bitcoin-trust-link-prediction
+   ```
+2. **One-Click Setup & Verification (Windows):**
+   Double-click **`setup_windows.bat`** (or run `.\setup_windows.bat` in PowerShell/CMD). This automatically creates `.venv`, installs all dependencies from `requirements.txt`, and runs all 16 automated tests.
+   - *Manual PowerShell alternative:*
+     ```powershell
+     python -m venv .venv
+     .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+     .\.venv\Scripts\python.exe run.py test
+     ```
+3. **Launch the Interactive Web Dashboard (Windows):**
+   Double-click **`run_ui_windows.bat`** (or run `.\.venv\Scripts\python.exe run.py serve`), which starts the server and automatically opens **`http://localhost:5000`** in your browser.
+
+---
+
+### Option B: Linux / macOS Quick Start
+
 ```bash
-.venv/bin/pytest tests/test_pipeline.py
+# 1. Create virtual environment & install dependencies
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+
+# 2. Run the 16 automated unit & integration tests
+.venv/bin/python run.py test
+
+# 3. Launch the Interactive Web Dashboard at http://localhost:5000
+.venv/bin/python run.py serve
 ```
 
-### 2. Run Master End-to-End Pipeline
+---
+
+### Cross-Platform CLI Runner (`run.py`)
+Works identically on **Windows, macOS, and Linux** without requiring GNU `make`:
+
 ```bash
-MPLCONFIGDIR=/tmp .venv/bin/python src/run_pipeline.py
-```
-This single command:
-1. Ingests and merges Bitcoin Alpha + OTC datasets (9,207 traders, 31,050 edges).
-2. Generates the 25,000-node Enterprise Synthetic Trust Network (135,857 edges).
-3. Performs 80/20 train-test splits with spanning-tree connectivity protection and negative sampling.
-4. Computes all link prediction heuristics (CN, Jaccard, AA, RA, PA, Ensemble).
-5. Generates high-res ROC curves, PR curves, Precision@K bar charts, and power-law distribution plots.
-6. Exports Top-20 recommendations with community roles and Cytoscape GraphML.
-
-### 3. Launch the Interactive Web Dashboard
-```bash
-MPLCONFIGDIR=/tmp .venv/bin/python src/serve.py 5000
-```
-Open **`http://localhost:5000`** in any web browser to:
-* Select any Bitcoin Trader ID (e.g. Trader #1, #2, #7, #14, #33, #177).
-* Switch between models (Common Neighbors, Jaccard, Adamic-Adar, RA, PA, Ensemble).
-* Explore the live force-directed ego network with existing trust ties (solid teal) and predicted links (dashed purple).
-* View live Top-10 / Top-20 recommendations with Adamic-Adar scores, community roles, and structural balance verification.
-* Export recommendations directly as a CSV file.
-
-### 4. Rebuild All Deliverables
-```bash
-# Rebuild executed Jupyter Notebook
-MPLCONFIGDIR=/tmp .venv/bin/python scripts/build_link_prediction_notebook.py
-
-# Rebuild Dataset Package ZIP with SHA-256
-MPLCONFIGDIR=/tmp .venv/bin/python scripts/package_dataset.py
-
-# Rebuild 8-Page Formal Academic Report
-MPLCONFIGDIR=/tmp .venv/bin/python reports/build_link_prediction_report.py
-
-# Rebuild 14-Slide Presentation Deck (PPTX & PDF)
-MPLCONFIGDIR=/tmp .venv/bin/python slides/build_link_prediction_deck.py
-
-# Rebuild Team Viva Study Guide PDF
-MPLCONFIGDIR=/tmp .venv/bin/python reports/build_study_guide_pdf.py
+python run.py serve        # Launch interactive web dashboard on http://localhost:5000
+python run.py test         # Run full automated test suite (16 tests)
+python run.py pipeline     # Execute master end-to-end link prediction pipeline
+python run.py temporal     # Execute chronological temporal backtest (2010-2016)
+python run.py embeddings   # Benchmark 64-D Spectral SVD embedding baseline
+python run.py report       # Rebuild 8-page formal academic report PDF
+python run.py slides       # Rebuild 14-slide presentation deck (.pptx & .pdf)
+python run.py study-guide  # Rebuild 6-page team presentation study guide PDF
+python run.py build-all    # Rebuild all deliverables and run all tests
 ```
 
 ---

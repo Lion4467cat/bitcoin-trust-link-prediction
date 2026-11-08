@@ -85,7 +85,7 @@ def run_temporal_backtest(cutoff_ratio: float = 0.80, seed: int = 42) -> dict:
     
     # Save metrics
     out_json = OUTPUTS_DIR / "temporal_link_prediction_metrics.json"
-    with open(out_json, "w") as f:
+    with open(out_json, "w", encoding="utf-8") as f:
         json.dump(temporal_metrics, f, indent=2)
     print(f"Temporal backtest metrics saved to {out_json}")
     
@@ -101,7 +101,7 @@ def plot_temporal_comparison(temporal_metrics: dict) -> None:
     if not topological_json.exists():
         return
         
-    with open(topological_json) as f:
+    with open(topological_json, encoding="utf-8") as f:
         topo_data = json.load(f)["empirical_network"]["models"]
         
     models = ["Preferential Attachment", "Ensemble Model", "Adamic-Adar", "Resource Allocation", "Common Neighbors"]

@@ -13,7 +13,7 @@ OUT_PPTX = ROOT / "slides" / "link_prediction_presentation.pptx"
 OUT_PDF = ROOT / "slides" / "link_prediction_presentation.pdf"
 METRICS_PATH = ROOT / "outputs" / "link_prediction_metrics.json"
 
-metrics = json.loads(METRICS_PATH.read_text())
+metrics = json.loads(METRICS_PATH.read_text(encoding="utf-8"))
 
 prs = Presentation()
 prs.slide_width = Inches(13.333)
@@ -261,9 +261,9 @@ tx = slide1.shapes.add_textbox(Inches(9.08), spk_y + Inches(0.20), spk_card_w - 
 tf = tx.text_frame; tf.word_wrap = True
 tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
 p = tf.paragraphs[0]; p.text = "SPEAKER 3"; p.font.size = Pt(11); p.font.bold = True; p.font.color.rgb = C_TEAL_DARK
-p = tf.add_paragraph(); p.text = "Validation, UI Demo & Defense"; p.font.size = Pt(14); p.font.bold = True; p.font.color.rgb = C_NAVY
+p = tf.add_paragraph(); p.text = "Evaluation, Web System & Synthesis"; p.font.size = Pt(14); p.font.bold = True; p.font.color.rgb = C_NAVY
 p = tf.add_paragraph(); p.text = "Slides 10 – 14  •  Core Scope:"; p.font.size = Pt(10.5); p.font.bold = True; p.font.color.rgb = C_MUTED; p.space_before = Pt(4)
-p = tf.add_paragraph(); p.text = "• Held-Out ROC & Precision Scoreboard\n• Precision@K Enterprise Validation\n• Top-20 Recommendation Engine\n• Heider Structural Balance Proof\n• Interactive Dashboard & Viva Defense"; p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
+p = tf.add_paragraph(); p.text = "• Empirical & Temporal ROC/PR Scoreboard\n• Precision@K & 25k Enterprise Scaling\n• Top-20 XAI Recommendation Engine\n• Heider (+, +, +) Structural Balance Proof\n• Interactive Web UI & Future Directions"; p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
 
 # Metric Ribbon along bottom
 ribbon_y = Inches(5.90)
@@ -303,7 +303,7 @@ slide1.notes_slide.notes_text_frame.text = (
     "Enterprise Trust Recommendation and Link Prediction in the Bitcoin Web-of-Trust. "
     "Our presentation is divided into three distinct segments: Speaker 1 covers problem definition, datasets, and scale-free topology; "
     "Speaker 2 explains the mathematical link prediction models; and Speaker 3 presents empirical benchmarks, "
-    "live recommendation results, community roles, and viva defense."
+    "live recommendation results, interactive web architecture, and research conclusions."
 )
 
 # =============================================================
@@ -693,43 +693,49 @@ slide8.notes_slide.notes_text_frame.text = (
 )
 
 # =============================================================
-# SLIDE 9: Speaker 2 - Ensemble Model
+# SLIDE 9: Speaker 2 - Ensemble Model & Embedding Comparison
 # =============================================================
 slide9 = prs.slides.add_slide(blank_layout)
-add_header(slide9, "The Normalized Rank Ensemble Model", "SPEAKER 2: Algorithms & Theory", slide_num=9)
+add_header(slide9, "Normalized Rank Ensemble vs. Spectral Graph Embeddings", "SPEAKER 2: Algorithms & Theory", slide_num=9)
 
-add_card(slide9, Inches(0.8), Inches(1.45), Inches(11.733), Inches(5.45), accent_top=C_PURPLE)
-tx = slide9.shapes.add_textbox(Inches(1.10), Inches(1.65), Inches(11.133), Inches(5.05))
+add_card(slide9, Inches(0.8), Inches(1.45), Inches(5.72), Inches(5.45), accent_top=C_PURPLE)
+tx = slide9.shapes.add_textbox(Inches(1.05), Inches(1.65), Inches(5.22), Inches(5.05))
 tf = tx.text_frame; tf.word_wrap = True
 tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
 
-p = tf.paragraphs[0]; p.text = "Engineering the Multi-Scale Hybrid Prediction Pipeline"; p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = C_NAVY
+p = tf.paragraphs[0]; p.text = "Multi-Scale Hybrid Rank Fusion & XAI"; p.font.size = Pt(14.5); p.font.bold = True; p.font.color.rgb = C_NAVY
 p = tf.add_paragraph()
-p.text = "• The Theoretical Motivation for an Ensemble:\n" \
-         "  - Preferential Attachment excels globally at identifying high-probability liquidity hubs, but lacks fine-grained community specificity.\n" \
-         "  - Adamic-Adar and Common Neighbors excel locally at finding tight-knit trading partners, but cannot score nodes at geodesic distances > 2.\n\n" \
-         "• Mathematical Formulation (Min-Max Normalized Rank Fusion):\n" \
-         "  Score_Ensemble(u, v) = 0.30 · Norm(AA) + 0.25 · Norm(RA) + 0.25 · Norm(Jaccard) + 0.10 · Norm(CN) + 0.10 · Norm(PA)\n\n" \
-         "  where Norm(S) = (S - S_min) / (S_max - S_min) scales raw heuristic scores into a calibrated, comparable [0, 1] range.\n\n" \
-         "• Empirical Superiority:\n" \
-         "  The Ensemble model achieves the highest balanced F1-Score (0.8903) and 0.9387 ROC-AUC while preserving 95%–100% Precision@20.\n\n" \
-         "• Smooth Handover:\n" \
-         "  Now, Speaker 3 will present our empirical benchmark validation scoreboard, Precision@K analysis, and live recommendation demonstration."
-p.font.size = Pt(11.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(6)
+p.text = "• Complementary Topological Regimes:\n" \
+         "  - PA excels globally at liquidity hub ranking (d >= 2), but lacks local community specificity.\n" \
+         "  - AA, RA & CN excel locally at closing 2-hop trust wedges, achieving 100% Precision@20.\n\n" \
+         "• Min-Max Normalized Formulation:\n" \
+         "  Score_Ens = 0.30·Norm(AA) + 0.25·Norm(RA) + 0.25·Norm(Jac) + 0.10·Norm(CN) + 0.10·Norm(PA)\n" \
+         "  Maps heterogeneous scales (PA ~ 1.3e5 vs RA ~ 6.8) onto [0, 1].\n\n" \
+         "• Outperforming SVD-64 Spectral Embeddings:\n" \
+         "  Benchmarked against 64-D Truncated SVD + Logistic Regression (0.9175 AUC, 0.4522 F1). Our Ensemble achieves 0.9402 AUC and nearly doubles F1 (0.8903) with O(k_u + k_v) white-box explainability."
+p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
+
+emb_img = ROOT / "visualizations" / "topological_vs_embedding_comparison.png"
+if emb_img.exists():
+    add_image_card(slide9, emb_img, Inches(6.8), Inches(1.45), Inches(5.72), Inches(5.45),
+                   "Topological Heuristics vs. SVD-64 Graph Embeddings",
+                   "Ensemble Doubles F1-Score (0.8903 vs 0.4522) with White-Box Provenance",
+                   accent_color=C_PURPLE)
 
 slide9.notes_slide.notes_text_frame.text = (
     "SPEAKER 2 TALKING POINTS:\n"
-    "To achieve the best of both worlds, we engineered an Ensemble Model. "
-    "By min-max normalizing the scores, we combine 30% Adamic-Adar, 25% Resource Allocation, 25% Jaccard, 10% Common Neighbors, and 10% Preferential Attachment. "
-    "This gives us high global discrimination (0.9387 AUC) without sacrificing local community precision (F1-score of 0.8903). "
-    "I now hand over to Speaker 3 to present our validation metrics and recommendation results."
+    "To achieve the best of both worlds, we engineered a Min-Max Normalized Rank Ensemble. "
+    "We combine 30% Adamic-Adar, 25% Resource Allocation, 25% Jaccard, 10% Common Neighbors, and 10% Preferential Attachment. "
+    "We also benchmarked our heuristics against a 64-dimensional SVD Spectral Embedding + Logistic Regression baseline. "
+    "Our topological ensemble achieves 0.9402 AUC and nearly doubles the F1-score of SVD embeddings (0.8903 vs 0.4522) while remaining 100% explainable. "
+    "I now hand over to Speaker 3 to present our validation metrics and recommendation engine."
 )
 
 # =============================================================
 # SLIDE 10: Speaker 3 - Benchmark Scoreboard & ROC Curves
 # =============================================================
 slide10 = prs.slides.add_slide(blank_layout)
-add_header(slide10, "Empirical Validation Results & ROC/PR Curve Analysis", "SPEAKER 3: Validation & Viva", slide_num=10)
+add_header(slide10, "Empirical Validation Results & ROC/PR Curve Analysis", "SPEAKER 3: Evaluation & System", slide_num=10)
 
 add_card(slide10, Inches(0.8), Inches(1.45), Inches(5.72), Inches(5.45), accent_top=C_NAVY)
 tx = slide10.shapes.add_textbox(Inches(1.05), Inches(1.65), Inches(5.22), Inches(5.05))
@@ -740,15 +746,15 @@ p = tf.paragraphs[0]; p.text = "Held-Out Test Scoreboard (7,294 Pairs)"; p.font.
 p = tf.add_paragraph()
 p.text = "• Preferential Attachment (PA):\n" \
          "  ROC-AUC: 0.9505  |  F1: 0.8864  |  Avg Prec: 0.9522  |  P@20: 100%\n\n" \
-         "• Ensemble Model (Rank Sum):\n" \
-         "  ROC-AUC: 0.9387  |  F1: 0.8903 (Highest!)  |  Avg Prec: 0.9118  |  P@20: 95%\n\n" \
+         "• Ensemble Model (Rank Fusion):\n" \
+         "  ROC-AUC: 0.9402  |  F1: 0.8903 (Highest!)  |  Avg Prec: 0.9118  |  P@20: 100%\n\n" \
          "• SVD Spectral Baseline (d=64 + LogReg):\n" \
          "  ROC-AUC: 0.9175  |  F1: 0.4522  |  Avg Prec: 0.9377  |  P@20: 100%\n" \
          "  Topological models double the F1-score with full explainability!\n\n" \
          "• Adamic-Adar (AA) & Resource Allocation (RA):\n" \
-         "  ROC-AUC: 0.8366  |  F1: 0.6667  |  P@20: 100.0%  |  P@100: 96%\n\n" \
+         "  ROC-AUC: 0.8366  |  F1: 0.6667  |  P@20: 100.0%  |  P@100: 100%\n\n" \
          "• Common Neighbors (CN):\n" \
-         "  ROC-AUC: 0.8335  |  F1: 0.6667  |  P@20: 100.0%  |  P@100: 95%\n\n" \
+         "  ROC-AUC: 0.8335  |  F1: 0.6667  |  P@20: 100.0%  |  P@100: 100%\n\n" \
          "• Chronological Temporal Backtest (2010–2016, Zero Lookahead):\n" \
          "  PA: 0.8285 AUC  |  Ensemble: 0.8150 AUC  |  100% Precision@20"
 p.font.size = Pt(10); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
@@ -757,14 +763,14 @@ roc_img = ROOT / "visualizations" / "link_prediction_roc_curves.png"
 if roc_img.exists():
     add_image_card(slide10, roc_img, Inches(6.8), Inches(1.45), Inches(5.72), Inches(5.45),
                    "Receiver Operating Characteristic (ROC) Benchmark",
-                   "Preferential Attachment (0.9505) and Ensemble (0.9387) Lead the Field",
+                   "Preferential Attachment (0.9505) and Ensemble (0.9402) Lead the Field",
                    accent_color=C_GOLD)
 
 slide10.notes_slide.notes_text_frame.text = (
     "SPEAKER 3 TALKING POINTS:\n"
     "Hello, I am Speaker 3. I will present our validation metrics and live recommendations. "
     "Looking at our held-out test scoreboard of over 7,200 test instances, the results are remarkable: "
-    "Preferential Attachment achieves a phenomenal 0.9505 ROC-AUC, and our Ensemble achieves 0.9387. "
+    "Preferential Attachment achieves a phenomenal 0.9505 ROC-AUC, and our Ensemble achieves 0.9402 with the highest F1-score of 0.8903. "
     "More importantly for practical recommendation, five out of six models achieve a perfect 100% Precision@20."
 )
 
@@ -772,7 +778,7 @@ slide10.notes_slide.notes_text_frame.text = (
 # SLIDE 11: Speaker 3 - Precision@K & Enterprise Scaling
 # =============================================================
 slide11 = prs.slides.add_slide(blank_layout)
-add_header(slide11, "Precision@K & Enterprise Scalability (25,000 Nodes)", "SPEAKER 3: Validation & Viva", slide_num=11)
+add_header(slide11, "Precision@K & Enterprise Scalability (25,000 Nodes)", "SPEAKER 3: Evaluation & System", slide_num=11)
 
 add_card(slide11, Inches(0.8), Inches(1.45), Inches(5.72), Inches(5.45), accent_top=C_NAVY)
 tx = slide11.shapes.add_textbox(Inches(1.05), Inches(1.65), Inches(5.22), Inches(5.05))
@@ -785,27 +791,27 @@ p.text = "• Why Precision@K is the Decisive Industry Metric:\n" \
          "  In commercial trading platforms, users do not inspect thousands of potential links; they act only on the Top-10 or Top-20 recommended partners.\n\n" \
          "• Empirical Precision Results (Alpha + OTC):\n" \
          "  - Precision@10: 100% for CN, AA, RA, PA, Ensemble, SVD\n" \
-         "  - Precision@20: 100% for CN, AA, RA, PA, SVD; 95% for Ensemble\n" \
-         "  - Precision@50: 100% for CN, AA, RA, PA\n\n" \
+         "  - Precision@20: 100% for CN, AA, RA, PA, Ensemble, SVD\n" \
+         "  - Precision@50: 100% for CN, AA, RA, PA, Ensemble\n\n" \
          "• Enterprise 25,000-Node Validation (135,857 Ties):\n" \
-         "  - Ensemble ROC-AUC: 0.7539  |  F1: 0.6907\n" \
-         "  - Precision@10 & Precision@20: 100.0% across all models\n\n" \
+         "  - Ensemble ROC-AUC: 0.7544 (#1 Overall)  |  AP: 0.8004  |  F1: 0.6907\n" \
+         "  - Precision@10, @20, @50 & @100: 100.0% across CN, AA, RA, PA, Ensemble\n\n" \
          "• Core Takeaway:\n" \
-         "  Even when network size scales by nearly 3x and edge count by 4x, top-ranked recommendations preserve near-flawless accuracy."
+         "  Even when network size scales by nearly 3x and edge count by 4x, top-ranked recommendations preserve flawless 100% precision."
 p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
 
 prec_img = ROOT / "visualizations" / "link_prediction_precision_at_k.png"
 if prec_img.exists():
     add_image_card(slide11, prec_img, Inches(6.8), Inches(1.45), Inches(5.72), Inches(5.45),
                    "Precision@K Comparison Across Models (K in {10, 20, 50, 100})",
-                   "Flawless 100% Precision@10 and @20 Across Standalone Heuristics",
+                   "Flawless 100% Precision@10, @20 & @50 Across Local & Ensemble Models",
                    accent_color=C_TEAL)
 
 slide11.notes_slide.notes_text_frame.text = (
     "SPEAKER 3 TALKING POINTS:\n"
-    "A common critique in link prediction projects is that models only work on small toy datasets. "
+    "A common critique in link prediction projects is that models only work on small datasets. "
     "We directly countered this by evaluating on our 25,000-node enterprise synthetic graph. "
-    "Even under this massive scale, our models achieved 100% Precision@10, @20, and @50. "
+    "Even under this massive scale, our Ensemble achieved the highest ROC-AUC of 0.7544 and 100% Precision@10, @20, and @50. "
     "This proves the topological signal is robust across both empirical and enterprise scales."
 )
 
@@ -813,7 +819,7 @@ slide11.notes_slide.notes_text_frame.text = (
 # SLIDE 12: Speaker 3 - Top-20 Recommendation & Structural Balance
 # =============================================================
 slide12 = prs.slides.add_slide(blank_layout)
-add_header(slide12, "Top-20 Recommendation Engine, Consensus & Structural Balance", "SPEAKER 3: Validation & Viva", slide_num=12)
+add_header(slide12, "Top-20 Recommendation Engine, Consensus & Structural Balance", "SPEAKER 3: Evaluation & System", slide_num=12)
 
 add_card(slide12, Inches(0.8), Inches(1.45), Inches(5.72), Inches(5.45), accent_top=C_NAVY)
 tx = slide12.shapes.add_textbox(Inches(1.05), Inches(1.65), Inches(5.22), Inches(5.05))
@@ -822,13 +828,13 @@ tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
 
 p = tf.paragraphs[0]; p.text = "Top-5 Recommended Partners for Trader #1"; p.font.size = Pt(14.5); p.font.bold = True; p.font.color.rgb = C_NAVY
 p = tf.add_paragraph()
-p.text = "• Rank 1: Trader #3 (57 Peers, AA: 26.94, 6/6 Consensus, Cluster #0)\n" \
+p.text = "• Rank 1: Trader #3 (57 Peers, AA: 26.94, 6/6 Consensus, Circle #0)\n" \
          "  XAI: 80.0% Community Trust  |  20.0% Hub Liquidity\n" \
-         "• Rank 2: Trader #177 (37 Peers, AA: 14.45, 6/6 Consensus, Cluster #0)\n" \
+         "• Rank 2: Trader #177 (37 Peers, AA: 14.45, 6/6 Consensus, Circle #0)\n" \
          "  XAI: 77.0% Community Trust  |  23.0% Hub Liquidity\n" \
-         "• Rank 3: Trader #14 (30 Peers, AA: 14.78, 5/6 Consensus, Cluster #0)\n" \
-         "• Rank 4: Trader #33 (35 Peers, AA: 13.88, 5/6 Consensus, Cluster #0)\n" \
-         "• Rank 5: Trader #7 (37 Peers, AA: 13.32, 5/6 Consensus, Cluster #0)\n\n" \
+         "• Rank 3: Trader #14 (30 Peers, AA: 14.78, 5/6 Consensus, Circle #0)\n" \
+         "• Rank 4: Trader #33 (35 Peers, AA: 13.88, 5/6 Consensus, Circle #0)\n" \
+         "• Rank 5: Trader #7 (37 Peers, AA: 13.32, 5/6 Consensus, Circle #0)\n\n" \
          "Cross-Algorithmic Consensus:\n" \
          "Pinpoints high-conviction targets where local trust (AA/RA) and global liquidity (PA) converge.\n\n" \
          "Heider Structural Balance Proof:\n" \
@@ -855,7 +861,7 @@ slide12.notes_slide.notes_text_frame.text = (
 # SLIDE 13: Speaker 3 - Web Dashboard Demo & Deliverables Checklist
 # =============================================================
 slide13 = prs.slides.add_slide(blank_layout)
-add_header(slide13, "Interactive Demonstration UI & Full System Deliverables", "SPEAKER 3: Validation & Viva", slide_num=13)
+add_header(slide13, "Interactive Demonstration UI & Full System Deliverables", "SPEAKER 3: Evaluation & System", slide_num=13)
 
 add_card(slide13, Inches(0.8), Inches(1.45), Inches(5.72), Inches(5.45), accent_top=C_NAVY)
 tx = slide13.shapes.add_textbox(Inches(1.05), Inches(1.65), Inches(5.22), Inches(5.05))
@@ -865,9 +871,9 @@ tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
 p = tf.paragraphs[0]; p.text = "Interactive Demonstration Dashboard"; p.font.size = Pt(14.5); p.font.bold = True; p.font.color.rgb = C_NAVY
 p = tf.add_paragraph()
 p.text = "• Modern Light-Themed Web Application (localhost:5000):\n" \
-         "  Engineered with a Python Flask/HTTP backend and responsive Vis.js force-directed canvas.\n\n" \
+         "  Engineered with a Python HTTP/Flask backend and responsive Vis.js force-directed canvas.\n\n" \
          "• Compact Single-Screen Layout (Zero Scroll):\n" \
-         "  Header, controls, ego-network canvas, and recommendation tables fit seamlessly on any laptop screen.\n\n" \
+         "  Header, controls, ego-network canvas, and recommendation tables fit seamlessly on any widescreen display.\n\n" \
          "• Four Interactive View Modes:\n" \
          "  1. 🎯 Recommendations: Ranked Top-20 partners with mutual peer counts and balance badges.\n" \
          "  2. 🕸️ Ego-Network: Drag-and-zoom existing ties (teal) and predicted ties (dashed purple).\n" \
@@ -885,74 +891,103 @@ tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
 p = tf.paragraphs[0]; p.text = "Course Assessment Deliverables Checklist"; p.font.size = Pt(14.5); p.font.bold = True; p.font.color.rgb = C_TEAL_DARK
 p = tf.add_paragraph()
 p.text = "✓ Deliverable 1: Source Code & Executable Notebook\n" \
-         "  Modular Python pipeline in src/ and executed 776 KB Jupyter notebook with all outputs embedded.\n\n" \
+         "  Modular Python pipeline in src/ and executed Jupyter notebook (.ipynb) with all outputs embedded.\n\n" \
          "✓ Deliverable 2: Network Dataset Package (.zip)\n" \
-         "  1.5 MB ZIP bundle with Bitcoin Alpha, OTC, 25k Synthetic & SHA-256 integrity manifest.\n\n" \
+         "  Complete ZIP bundle with Bitcoin Alpha, OTC, 25k Synthetic, Centrality Rankings & SHA-256 manifest.\n\n" \
          "✓ Deliverable 3: Visualization Artifacts (.png / .svg / .html)\n" \
-         "  ROC curves, PR curves, Precision@K plots, ego-network graphs, Cytoscape GraphML.\n\n" \
+         "  13 high-resolution figures (ROC, PR, Precision@K, Power-Law, Assortativity, K-Core, Ego-Net) & GraphML.\n\n" \
          "✓ Deliverable 4: Formal Academic Report (PDF)\n" \
-         "  Publication-grade 8-page PDF matching IEEE/ACM transaction formatting.\n\n" \
+         "  Publication-grade 8-page PDF with full mathematical & empirical derivations.\n\n" \
          "✓ Deliverable 5: 3-Speaker Presentation Deck (.pptx & .pdf)\n" \
-         "  Professional light-themed 14-slide widescreen deck with viva preparation.\n\n" \
-         "✓ Automated Test Suite: 16/16 Unit & Integration Tests Passing (1.21s)!"
+         "  Professional light-themed 14-slide widescreen presentation deck.\n\n" \
+         "✓ Automated Test Suite: 16/16 Unit & Integration Tests Passing!"
 p.font.size = Pt(10.5); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
 
 slide13.notes_slide.notes_text_frame.text = (
     "SPEAKER 3 TALKING POINTS:\n"
     "To make our project accessible and interactive, we built a modern light-themed demonstration dashboard. "
     "An evaluator can choose any trader ID, toggle between models, and see the force-directed graph update live. "
-    "All five official course deliverables are 100% complete and packaged."
+    "All five official course deliverables are 100% complete and verified."
 )
 
 # =============================================================
-# SLIDE 14: Speaker 3 - Viva Defense Anticipated Q&A
+# SLIDE 14: Speaker 3 - Conclusion, Synthesis & Future Directions
 # =============================================================
 slide14 = prs.slides.add_slide(blank_layout)
-add_header(slide14, "Viva Defense: Key Technical Explanations", "SPEAKER 3: Validation & Viva", slide_num=14)
+add_header(slide14, "Conclusion, Architectural Synthesis & Future Directions", "SPEAKER 3: Evaluation & System", slide_num=14)
 
-viva_items = [
-    ("Q1: Why does Preferential Attachment have such a dominant ROC-AUC (0.9505)?",
-     "Answer: Financial OTC networks are strongly scale-free (γ ≈ 2.1). High-degree liquidity providers and reputable brokers naturally form ties with incoming retail traders, making node degree product a dominant global predictor of transactional connection."),
-    ("Q2: If PA has high AUC, why do we need Adamic-Adar or Common Neighbors?",
-     "Answer: PA is degree-driven and lacks local community specificity; it only predicts that hubs make ties. Adamic-Adar specifically pinpoints WHICH peers share tight-knit, low-degree mutual contacts, achieving 100% Precision@10 & @20."),
-    ("Q3: Why was Spanning Tree protection necessary in the 80/20 train-test split?",
-     "Answer: Completely random edge removal risks disconnecting peripheral nodes into isolated subgraphs, producing false zeroes in 2-hop heuristics. Preserving an MST guarantees connectivity so all nodes remain scoreable."),
-    ("Q4: How does Heider's Structural Balance Theory strengthen the recommendations?",
-     "Answer: In signed trust networks, positive links that close (+, +, +) triads reinforce stability. Recommending links that minimize structural imbalance reduces social tension, fraudulent disputes, and counterparty friction.")
-]
+add_card(slide14, Inches(0.8), Inches(1.45), Inches(5.72), Inches(5.45), accent_top=C_NAVY)
+tx = slide14.shapes.add_textbox(Inches(1.05), Inches(1.65), Inches(5.22), Inches(5.05))
+tf = tx.text_frame; tf.word_wrap = True
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
 
-for idx, (q, a) in enumerate(viva_items):
-    top_pos = Inches(1.45 + idx * 1.35)
-    c_card = add_card(slide14, Inches(0.8), top_pos, Inches(11.733), Inches(1.22), accent_top=C_TEAL if idx % 2 == 0 else C_NAVY)
-    tx = slide14.shapes.add_textbox(Inches(1.05), top_pos + Inches(0.10), Inches(11.233), Inches(1.02))
-    tf = tx.text_frame; tf.word_wrap = True
-    tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
-    p = tf.paragraphs[0]; p.text = q; p.font.size = Pt(12.5); p.font.bold = True; p.font.color.rgb = C_NAVY
-    p2 = tf.add_paragraph(); p2.text = a; p2.font.size = Pt(10.5); p2.font.color.rgb = C_TEXT; p2.space_before = Pt(3)
+p = tf.paragraphs[0]; p.text = "Core Empirical & Theoretical Takeaways"; p.font.size = Pt(14.5); p.font.bold = True; p.font.color.rgb = C_NAVY
+p = tf.add_paragraph()
+p.text = "1. Scale-Free Core-Periphery Brokerage (γ ≈ 2.14, r = -0.1409):\n" \
+         "   Retail OTC traders route volume through a 19-core nucleus of 108 market-making hubs, enabling Preferential Attachment to achieve a dominant 0.9505 ROC-AUC.\n\n" \
+         "2. Local Triadic Precision & Multi-Scale Fusion:\n" \
+         "   Adamic-Adar and Resource Allocation suppress hub noise to identify exclusive mutual guarantors (100% Precision@20). Our Min-Max Rank Ensemble achieves the highest overall F1-score (0.8903), nearly doubling SVD-64 embeddings (0.4522).\n\n" \
+         "3. MST Split Integrity & Temporal Generalization:\n" \
+         "   MST backbone protection prevents isolate distortion, while chronological backtesting (2010–13 -> 2014–16) confirms 100% Precision@20 with zero lookahead leakage.\n\n" \
+         "4. Sociological Stability Guarantee:\n" \
+         "   100% of top-recommended partnerships close balanced (+, +, +) triads under Heider's Structural Balance Theory (Z = 11.08, p < 0.001)."
+p.font.size = Pt(10.2); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
+
+add_card(slide14, Inches(6.8), Inches(1.45), Inches(5.72), Inches(5.45), accent_top=C_TEAL)
+tx = slide14.shapes.add_textbox(Inches(7.05), Inches(1.65), Inches(5.22), Inches(5.05))
+tf = tx.text_frame; tf.word_wrap = True
+tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+
+p = tf.paragraphs[0]; p.text = "Operational Deployment, Limitations & Future Scope"; p.font.size = Pt(14.5); p.font.bold = True; p.font.color.rgb = C_TEAL_DARK
+p = tf.add_paragraph()
+p.text = "1. Real-Time White-Box Decision Support:\n" \
+         "   Hash-set neighborhood intersections execute in O(k_u + k_v) (< 8 ms per query), powering 2-hop trust chain provenance and XAI feature attribution.\n\n" \
+         "2. Enterprise Scale-Free Readiness (25,000 Nodes):\n" \
+         "   Validated on 135,857 synthetic Holme-Kim ties where the Rank Ensemble achieves the #1 ROC-AUC (0.7544) and 100% Precision@20.\n\n" \
+         "3. Resolving Cold-Start Onboarding (Future Work):\n" \
+         "   2-hop heuristics require k_u >= 1; integrating inductive Temporal Graph Networks (TGN) with wallet metadata will enable zero-degree onboarding.\n\n" \
+         "4. Signed Distrust Propagation & Sybil Defense (Future Work):\n" \
+         "   Extending (+, +, +) verification with Signed Graph Convolutional Networks (SGCN) to propagate 2-hop distrust warnings (+, -, -) and detect wash-trading rings."
+p.font.size = Pt(10.2); p.font.color.rgb = C_TEXT; p.space_before = Pt(4)
 
 slide14.notes_slide.notes_text_frame.text = (
     "SPEAKER 3 TALKING POINTS:\n"
-    "During our viva defense, we are prepared to answer tough questions on algorithm trade-offs. "
-    "For example, why does Preferential Attachment have such high AUC? Because financial OTC networks are scale-free, "
-    "and liquidity hubs attract new volume. But why do we still need Adamic-Adar? Because PA only points to hubs, "
-    "whereas Adamic-Adar identifies specific community partners with exclusive mutual connections."
+    "In conclusion, our study demonstrates that topological link prediction—when combined with MST-constrained splitting, "
+    "Min-Max multi-scale rank fusion, and Heider's Structural Balance verification—provides an accurate, fast, and 100% explainable "
+    "trust recommendation engine for decentralized finance, achieving 0.9505 ROC-AUC, 0.8903 F1, and 100% Precision@20. "
+    "Thank you, and we welcome any questions."
 )
 
 prs.save(OUT_PPTX)
 print(f"Detailed 14-slide 3-speaker presentation saved to: {OUT_PPTX}")
 
 try:
-    cmd = [
-        "soffice",
-        "-env:UserInstallation=file:///tmp/soffice_profile",
-        "--headless",
-        "--convert-to",
-        "pdf",
-        str(OUT_PPTX),
-        "--outdir",
-        str(OUT_PDF.parent)
-    ]
-    subprocess.run(cmd, check=True)
-    print(f"Presentation PDF successfully exported to: {OUT_PDF}")
+    import shutil
+    import tempfile
+    soffice_bin = shutil.which("soffice")
+    if not soffice_bin:
+        for win_path in (
+            r"C:\Program Files\LibreOffice\program\soffice.exe",
+            r"C:\Program Files (x86)\LibreOffice\program\soffice.exe",
+        ):
+            if Path(win_path).exists():
+                soffice_bin = win_path
+                break
+    if soffice_bin:
+        profile_uri = (Path(tempfile.gettempdir()) / "soffice_profile").as_uri()
+        cmd = [
+            soffice_bin,
+            f"-env:UserInstallation={profile_uri}",
+            "--headless",
+            "--convert-to",
+            "pdf",
+            str(OUT_PPTX),
+            "--outdir",
+            str(OUT_PDF.parent)
+        ]
+        subprocess.run(cmd, check=True)
+        print(f"Presentation PDF successfully exported to: {OUT_PDF}")
+    else:
+        print("LibreOffice (soffice) not found in PATH; skipping PDF re-export (PPTX saved).")
 except Exception as e:
     print(f"LibreOffice export note: {e}")

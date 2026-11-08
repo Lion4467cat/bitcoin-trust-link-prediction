@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "reports" / "structural_balance_report.pdf"
-SUMMARY = json.loads((ROOT / "outputs" / "summary.json").read_text())
+SUMMARY = json.loads((ROOT / "outputs" / "summary.json").read_text(encoding="utf-8"))
 NAVY = colors.HexColor("#18343D")
 TEAL = colors.HexColor("#17806D")
 RUST = colors.HexColor("#C8504B")

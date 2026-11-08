@@ -134,7 +134,7 @@ display(sample_df)"""),
 We evaluate all models on the complete held-out test set ($E_{test}^{+} \\cup E_{test}^{-}$) across **ROC-AUC**, **Precision@10, @20, @50, @100**, and **F1-Score**."""),
 
     nbformat.v4.new_code_cell("""import json
-with open(ROOT / "outputs" / "link_prediction_metrics.json") as f:
+with open(ROOT / "outputs" / "link_prediction_metrics.json", encoding="utf-8") as f:
     metrics_data = json.load(f)
 
 summary_rows = []
@@ -168,7 +168,7 @@ We benchmark our SNA topological heuristics against modern **Graph Representatio
 * **Architecture:** Truncated SVD matrix factorization generating $d=64$ low-rank spectral node embeddings, followed by a supervised Logistic Regression classifier trained on edge Hadamard products ($z_u \odot z_v$).
 * **Comparative Finding:** While SVD Representation Learning achieves a strong **0.9175 ROC-AUC**, standalone **Preferential Attachment (0.9505 ROC-AUC)** and the **Rank Ensemble (0.9387 ROC-AUC, 0.8903 F1)** outperform it. Crucially, SNA heuristics achieve this with $O(1)$ to $O(d_u + d_v)$ computational complexity, zero offline embedding training, and 100% white-box explainability."""),
 
-    nbformat.v4.new_code_cell("""with open(ROOT / "outputs" / "representation_learning_comparison.json") as f:
+    nbformat.v4.new_code_cell("""with open(ROOT / "outputs" / "representation_learning_comparison.json", encoding="utf-8") as f:
     repr_data = json.load(f)
 repr_rows = []
 for model_name, info in repr_data.items():
@@ -236,7 +236,7 @@ consensus_df = consensus_df.sort_values(by="Votes", ascending=False).reset_index
 consensus_df["Consensus"] = consensus_df["Votes"].apply(lambda v: f"★ {v}/6 Models Agreed" if v >= 4 else f"{v}/6 Models")
 display(consensus_df[["Consensus", "Candidate", "Mutual Peers", "Ensemble", "Adamic-Adar", "Common Neighbors", "Jaccard", "Preferential Attachment", "Resource Allocation", "Community Role", "Balance"]])"""),
 
-    nbformat.v4.new_markdown_cell("""## 8. Summary of Findings & Viva Defense
+    nbformat.v4.new_markdown_cell("""## 8. Summary of Findings & Architectural Conclusions
 
 1. **Topological Predictability:** Trust links in Bitcoin are highly predictable from local network topology alone. Preferential Attachment and Ensemble models achieve an **ROC-AUC of over 0.93 - 0.95**.
 2. **High Precision@K:** Top-ranked recommendations have a **100% Precision@10 and Precision@20**, demonstrating that the system generates trustworthy partner recommendations.

@@ -80,7 +80,7 @@ def run_full_pipeline():
         }
     }
     
-    with open(METRICS_JSON, "w") as f:
+    with open(METRICS_JSON, "w", encoding="utf-8") as f:
         json.dump(all_metrics, f, indent=2)
     print(f"Metrics saved to {METRICS_JSON}")
     
